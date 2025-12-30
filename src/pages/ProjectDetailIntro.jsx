@@ -1,13 +1,13 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-function ProjectDetailMywork() {
+function ProjectDetailIntro() {
   // 导航项数据
   const navItems = [
-    { name: '行业领域', id: 'field' },
-    { name: '技术架构', id: 'tech' },
-    { name: '一些亮点', id: 'light' },
-    { name: '其他', id: 'others' },
+    { name: '小破孩', id: 'child' },
+    { name: '初具战力', id: 'teenager' },
+    { name: '社会牛马', id: 'middleage' },
+    { name: '老狗', id: 'old' },
   ];
 
   return (
@@ -75,11 +75,8 @@ function ProjectDetailMywork() {
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-teal-500/10 blur-[80px] rounded-full"></div>
 
           {/* 主标题 ABILITY */}
-          {/* <h2 className="text-6xl md:text-7xl font-black mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)]">
-            ABILITY
-          </h2> */}
           <h2 className="text-6xl md:text-7xl font-black mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)]">
-            ABILITY
+            INTRODUCTION
           </h2>
 
           {/* 副标题 */}
@@ -90,7 +87,7 @@ function ProjectDetailMywork() {
             transition={{ delay: 0.4, duration: 1 }}
           >
              <span className="text-teal-400 font-medium relative">
-              Change some things
+              Record some things
               {/* 文字下方的渐变线条 */}
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-transparent"></span>
             </span>!
@@ -101,16 +98,16 @@ function ProjectDetailMywork() {
         <section className="mb-16">
           <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
             <img 
-              src="/work.jpg" 
+              src="/intro.jpg" 
               alt="Project" 
               className="w-full h-auto object-cover"
             />
           </div>
         </section>
 
-        {/* 行业领域部分 */}
-        <section id="field" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-red-500">行业领域</h2>
+        {/* 童年部分 */}
+        <section id="child" className="mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-red-500">小破孩</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
             <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
               <h3 className="font-bold text-white mb-2">前端框架</h3>
@@ -123,9 +120,9 @@ function ProjectDetailMywork() {
           </div>
         </section>
 
-        {/* 技术架构部分 */}
-        <section id="tech" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-teal-400">技术架构</h2>
+        {/* 青少年部分 */}
+        <section id="teenager" className="mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-teal-400">初具战力</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
             <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
               <h3 className="font-bold text-white mb-2">前端框架</h3>
@@ -138,9 +135,9 @@ function ProjectDetailMywork() {
           </div>
         </section>
 
-        {/* 亮点 */}
-        <section id="light" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-sky-400">一些亮点</h2>
+        {/* 中年 */}
+        <section id="middleage" className="mb-16">
+          <h2 className="text-3xl font-bold mb-6 text-sky-400">社会牛马</h2>
           <ul className="list-disc list-inside space-y-4 text-slate-300">
             <li><span className="text-white font-semibold">响应式设计：</span> 完美适配手机、平板和桌面端。</li>
             <li><span className="text-white font-semibold">流体动画：</span> 所有的入场和交互均有微动效。</li>
@@ -148,9 +145,9 @@ function ProjectDetailMywork() {
           </ul>
         </section>
 
-        {/* 底部占位，方便演示目录跳转 */}
-        <section id="others" className="h-64">
-          <h2 className="text-3xl font-bold mb-6 text-purple-400">其他</h2>
+        {/* 老年 */}
+        <section id="old" className="h-64">
+          <h2 className="text-3xl font-bold mb-6 text-purple-400">老狗</h2>
           <p className="text-slate-300">在这个项目中，我深刻体会到了现代前端工具链带来的效率提升...</p>
         </section>
       </motion.main>
@@ -158,4 +155,4 @@ function ProjectDetailMywork() {
   );
 }
 
-export default ProjectDetailMywork;
+export default ProjectDetailIntro;
