@@ -1,1 +1,11 @@
 @import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* 强制增加背景尺寸，否则渐变动不起来 */
+.animate-text-shimmer {
+  background-size: 200% auto;
+}
