@@ -1,0 +1,25 @@
+# EditorConfig 配置文件 - 保证多系统开发一致性
+
+root = true
+
+[*]
+# 字符集
+charset = utf-8
+# 缩进风格：空格
+indent_style = space
+# 缩进大小：2 个空格（React/Tailwind 项目的通用标准）
+indent_size = 2
+# 换行符类型：LF (Linux/Mac 风格，这是跨平台开发的标准)
+end_of_line = lf
+# 文件末尾始终保留一个空行
+insert_final_newline = true
+# 自动修剪行尾多余的空格
+trim_trailing_whitespace = true
+
+[*.md]
+# Markdown 文件通常不需要修剪末尾空格，因为两个空格代表换行
+trim_trailing_whitespace = false
+
+[package.json]
+# 部分开发者喜欢 JSON 用 4 个空格，这里保持 2 个
+indent_size = 2

@@ -17,7 +17,7 @@ const RainEffect = () => {
         size: 14 + Math.random() * 10,
       };
       setDrops((prev) => [...prev.slice(-30), newDrop]); // 【修改 3】：保留上限从 15 增加到 30
-    }, 300); 
+    }, 300);
     return () => clearInterval(interval);
   }, []);
 
@@ -60,7 +60,7 @@ const WoodFish = () => {
     setPopups(prev => [...prev, newPopup]);
     setTimeout(() => {
       setPopups(prev => prev.filter(p => p.id !== newPopup.id));
-    }, 1000);
+    }, 2000);
   };
 
   return (
@@ -76,7 +76,8 @@ const WoodFish = () => {
               <motion.div
                 key={popup.id}
                 initial={{ opacity: 1, y: 0, scale: 0.5 }}
-                animate={{ opacity: 0, y: -100, scale: 1.2 }}
+                animate={{ opacity: 0, y: -120, scale: 1.2 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
                 exit={{ opacity: 0 }}
                 className={`font-bold absolute w-full left-0 ${popup.text === "功德 +1" ? "text-teal-300" : "text-yellow-300"}`}
               >
@@ -119,7 +120,7 @@ function Home() {
     >
       {/* 掉落背景层 */}
       <RainEffect />
-      
+
       {/* 装饰光晕 */}
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
 
@@ -130,7 +131,7 @@ function Home() {
         animate="visible"
       >
         <motion.header variants={itemVariants} className="mb-12 text-center">
-          <motion.img 
+          <motion.img
             src="/Avatar.jpg"
             className="w-32 h-32 rounded-full border-4 border-teal-500/50 shadow-2xl mx-auto mb-6 object-cover"
             whileHover={{ scale: 1.1, rotate: 5 }}
@@ -147,8 +148,10 @@ function Home() {
           {/* 统一的渲染块函数，减少重复代码 */}
           {[
             { title: "个人介绍", link: "/projectintro/intro", items: ["一名对技术充满热情的探索者", "致力于通过技术解决实际问题", "乐于学习新知识，挑战未知"] },
-            { title: "兴趣爱好", link: "/projectinterest/interest", items: ["游戏：死亡搁浅、大镖客、永劫无间、仙剑...", "户外：徒步和探索自然、闲逛、骑摩托、游泳...", 
-              "阅读：历史与科幻", "音乐：竹笛、陶笛爱好者，喜欢玩但都不太会"] },
+            {
+              title: "兴趣爱好", link: "/projectinterest/interest", items: ["游戏：死亡搁浅、大镖客、永劫无间、仙剑...", "户外：徒步和探索自然、闲逛、骑摩托、游泳...",
+                "阅读：历史与科幻", "音乐：竹笛、陶笛爱好者，喜欢玩但都不太会"]
+            },
             { title: "技术能力", link: "/projectwork/work", items: ["自动驾驶相关技术(算法、中间件、基础设施等)", "港口机械自动化 (算法、业务等)", "现代前端开发 (React, Tailwind)"] }
           ].map((sec, idx) => (
             <motion.section key={idx} variants={itemVariants}>

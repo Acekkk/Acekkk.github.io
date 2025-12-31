@@ -1,47 +1,130 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-function ProjectDetailIntro() {
-  // 导航项数据
-  const navItems = [
-    { name: '小破孩', id: 'child' },
-    { name: '初具战力', id: 'teenager' },
-    { name: '社会牛马', id: 'middleage' },
-    { name: '老狗', id: 'old' },
-  ];
+// 数据配置：个人生活轨迹/成长经历
+const introData = [
+  {
+    id: 'child',
+    title: '小破孩 (Childhood)',
+    color: 'text-red-500',
+    items: [
+      {
+        title: '无忧无虑',
+        img: 'https://images.unsplash.com/photo-1472162072942-cd5147eb3902?auto=format&fit=crop&q=80',
+        desc: '那是记忆中最纯粹的时光，世界很大，烦恼很小。每天的作业是最大的敌人，楼下的沙堆是最好的城堡。'
+      },
+      {
+        title: '好奇心',
+        img: 'https://images.unsplash.com/photo-1545558014-a69f79cb97ce?auto=format&fit=crop&q=80',
+        desc: '对一切未知充满好奇，拆过收音机，抓过知了，每一次探索都是一次伟大的冒险。'
+      }
+    ]
+  },
+  {
+    id: 'teenager',
+    title: '初具战力 (Adolescence)',
+    color: 'text-teal-400',
+    items: [
+      {
+        title: '求学之路',
+        img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80',
+        desc: '书山有路勤为径。在知识的海洋里遨游，开始构建自己的世界观，虽然偶尔也会即使迷茫，但眼中总有光。'
+      },
+      {
+        title: '初识代码',
+        img: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=80',
+        desc: 'Hello World! 当第一次在屏幕上打印出这行字时，仿佛拥有了改变世界的魔法钥匙。'
+      }
+    ]
+  },
+  {
+    id: 'work',
+    title: '社会牛马 (Career)',
+    color: 'text-sky-400',
+    items: [
+      {
+        title: '打工人的日常',
+        img: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80',
+        desc: '早八晚五？不存在的。在代码的构建与重构中寻找价值，虽然自嘲牛马，但依然对技术保持热忱。'
+      },
+      {
+        title: '技术沉淀',
+        img: 'https://images.unsplash.com/photo-1504384308090-c54be3853247?auto=format&fit=crop&q=80',
+        desc: '从 React 到自动驾驶算法，技能树不断点亮。解决问题的快感，是支撑每一个加班夜的动力。'
+      }
+    ]
+  },
+  {
+    id: 'future',
+    title: '老狗 (Future)',
+    color: 'text-purple-400',
+    items: [
+      {
+        title: '归于平淡',
+        img: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80',
+        desc: '希望能有一个小院子，晒晒太阳，写写自己喜欢的代码，不为生计奔波，只为热爱而活。'
+      },
+      {
+        title: '薪火相传',
+        img: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80',
+        desc: '将毕生所学整理成册，或许能给后来的探索者一点点光亮，这就足够了。'
+      }
+    ]
+  }
+];
 
+// 复用与 Interest 页面一直的卡片组件风格
+const IntroCard = ({ item }) => (
+  <motion.div
+    whileHover={{ y: -5 }}
+    className="bg-slate-900 rounded-xl border border-slate-800 p-4 h-full flex flex-col hover:border-slate-700 transition-colors"
+  >
+    <h3 className="font-bold text-white mb-3 text-lg">{item.title}</h3>
+    <div className="rounded-lg overflow-hidden border border-slate-800 shadow-lg mb-4 bg-slate-950 aspect-video relative group">
+      <img
+        src={item.img}
+        alt={item.title}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        loading="lazy"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    </div>
+    {item.desc && (
+      <p className="text-sm text-slate-400 leading-relaxed mt-auto">
+        {item.desc}
+      </p>
+    )}
+  </motion.div>
+);
+
+function ProjectDetailIntro() {
   return (
     <div className="flex min-h-screen bg-slate-950 text-white">
       {/* 1. 固定侧边导航栏 */}
-      <motion.nav 
+      <motion.nav
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         className="w-64 h-screen sticky top-0 border-r border-slate-800 p-6 flex flex-col hidden md:flex"
       >
-        <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2">
+        <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2 font-medium">
           <span>←</span> 返回主页
         </Link>
 
         <div className="space-y-6">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">目录</p>
-          <ul className="space-y-4">
-            {navItems.map((item) => (
-              <li key={item.id}>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">时间线</p>
+          <ul className="space-y-2">
+            {introData.map((section) => (
+              <li key={section.id}>
                 <button
                   onClick={() => {
-                    // 1. 找到对应的 DOM 元素
-                    const element = document.getElementById(item.id);
-                    // 2. 执行平滑滚动
-                    if (element) {
-                      element.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                      });
-                    }
+                    document.getElementById(section.id)?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
                   }}
-                  className="text-slate-400 hover:text-teal-400 transition-colors block text-sm text-left w-full cursor-pointer"
+                  className="text-slate-400 hover:text-teal-400 hover:bg-slate-900 px-3 py-2 rounded-lg transition-all block text-sm text-left w-full cursor-pointer"
                 >
-                  {item.name}
+                  {section.title.split(' ')[0]} {/* 仅显示中文标题 */}
                 </button>
               </li>
             ))}
@@ -54,102 +137,81 @@ function ProjectDetailIntro() {
       </motion.nav>
 
       {/* 2. 主内容区域 */}
-      <motion.main 
+      <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 p-8 md:p-16 max-w-4xl"
+        className="flex-1 p-6 md:p-16 max-w-5xl mx-auto"
       >
-        {/* 移动端返回按钮 (仅在小屏幕显示) */}
-        <Link to="/" className="md:hidden text-teal-400 mb-6 block">← 返回主页</Link>
+        {/* 移动端返回按钮 */}
+        <Link to="/" className="md:hidden text-teal-400 mb-8 inline-flex items-center gap-2 border border-slate-800 px-4 py-2 rounded-full text-sm bg-slate-900/50">
+          ← 返回主页
+        </Link>
 
-        {/* 项目标题 */}
-        <motion.header 
-          id="overview" 
-          className="mb-16 relative"
+        {/* 页面头部 */}
+        <motion.header
+          id="overview"
+          className="mb-20 relative"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
         >
-          {/* 背景装饰：一个淡淡的渐变光晕，增加空间感 */}
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-teal-500/10 blur-[80px] rounded-full"></div>
 
-          {/* 主标题 ABILITY */}
-          <h2 className="text-6xl md:text-7xl font-black mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)]">
+          <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer">
             INTRODUCTION
           </h2>
 
-          {/* 副标题 */}
-          <motion.p 
-            className="text-xl md:text-2xl text-slate-400 font-light tracking-[0.2em] uppercase"
+          <motion.p
+            className="text-lg md:text-2xl text-slate-400 font-light tracking-[0.2em] uppercase"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 1 }}
+            transition={{ delay: 0.4 }}
           >
-             <span className="text-teal-400 font-medium relative">
-              Record some things
-              {/* 文字下方的渐变线条 */}
+            <span className="text-teal-400 font-medium relative inline-block">
+              Record life trajectory
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-transparent"></span>
-            </span>!
+            </span>
           </motion.p>
         </motion.header>
 
-        {/* 项目图片 */}
-        <section className="mb-16">
-          <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-            <img 
-              src="/intro.jpg" 
-              alt="Project" 
-              className="w-full h-auto object-cover"
+        {/* 顶部主图 */}
+        <section className="mb-20">
+          <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent z-10 pointer-events-none"></div>
+            <img
+              src="/intro.jpg"
+              alt="Introduction Cover"
+              className="w-full h-[300px] md:h-[400px] object-cover"
             />
-          </div>
-        </section>
-
-        {/* 童年部分 */}
-        <section id="child" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-red-500">小破孩</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">前端框架</h3>
-              <p>React 18 & Vite - 提供极致的开发体验和组件化能力。</p>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">样式处理</h3>
-              <p>Tailwind CSS - 原子化 CSS 确保了极小的样式体积和快速的布局实现。</p>
+            <div className="absolute bottom-6 left-6 right-6 z-20">
+              <p className="text-slate-300 max-w-2xl text-sm md:text-base italic">
+                “人生是一场漫长的旅程，重要的不是目的地，而是沿途的风景。”
+              </p>
             </div>
           </div>
         </section>
 
-        {/* 青少年部分 */}
-        <section id="teenager" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-teal-400">初具战力</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">前端框架</h3>
-              <p>React 18 & Vite - 提供极致的开发体验和组件化能力。</p>
+        {/* 循环渲染各个板块 */}
+        {introData.map((section, idx) => (
+          <section key={section.id} id={section.id} className="mb-20 scroll-mt-10">
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className={`text-3xl font-bold ${section.color}`}>{section.title}</h2>
+              <div className="h-[1px] bg-slate-800 flex-1"></div>
             </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">样式处理</h3>
-              <p>Tailwind CSS - 原子化 CSS 确保了极小的样式体积和快速的布局实现。</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {section.items.map((item, i) => (
+                <IntroCard key={i} item={item} />
+              ))}
             </div>
-          </div>
-        </section>
+          </section>
+        ))}
 
-        {/* 中年 */}
-        <section id="middleage" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-sky-400">社会牛马</h2>
-          <ul className="list-disc list-inside space-y-4 text-slate-300">
-            <li><span className="text-white font-semibold">响应式设计：</span> 完美适配手机、平板和桌面端。</li>
-            <li><span className="text-white font-semibold">流体动画：</span> 所有的入场和交互均有微动效。</li>
-            <li><span className="text-white font-semibold">自动化部署：</span> 每次 Push 都会通过 GitHub Actions 自动上线。</li>
-          </ul>
-        </section>
+        <div className="h-32 text-center text-slate-600 flex items-center justify-center text-sm">
+          To be continued...
+        </div>
 
-        {/* 老年 */}
-        <section id="old" className="h-64">
-          <h2 className="text-3xl font-bold mb-6 text-purple-400">老狗</h2>
-          <p className="text-slate-300">在这个项目中，我深刻体会到了现代前端工具链带来的效率提升...</p>
-        </section>
       </motion.main>
     </div>
   );

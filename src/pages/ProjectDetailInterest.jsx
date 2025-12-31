@@ -1,47 +1,161 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 
-function ProjectDetailInterest() {
-  // 导航项数据
-  const navItems = [
-    { name: '游戏', id: 'game' },
-    { name: '户外', id: 'outdoor' },
-    { name: '音乐', id: 'music' },
-    { name: '其他', id: 'others' },
-  ];
+// 数据配置：只要在这里修改，页面就会自动更新
+const interestData = [
+  {
+    id: 'game',
+    title: '游戏',
+    color: 'text-red-500',
+    items: [
+      {
+        title: '永劫无间',
+        img: '/yj.webp',
+        desc: '在聚窟洲中博弈，体验冷兵器格斗的魅力，振刀时刻的快感无与伦比。'
+      },
+      {
+        title: '死亡搁浅',
+        img: '/ds.jpg',
+        desc: '连接断裂的世界。送快递不仅仅是任务，更是一场关于孤独、连接与希望的修行。'
+      },
+      {
+        title: '荒野大镖客2',
+        img: '/rd.jpg',
+        desc: '沉浸于西部世界的余晖，体验亚瑟·摩根传奇而又悲情的一生。'
+      },
+      {
+        title: '仙剑奇侠传',
+        img: '/xj.jpeg',
+        desc: '仗剑江湖，儿女情长。承载着无数回忆的经典国产 RPG。'
+      },
+      {
+        title: '鬼泣5',
+        img: '/dmc.webp',
+        desc: '不仅是战斗，更是华丽的表演。追求 SSSS 级评价的极限操作。'
+      },
+      {
+        title: '魔兽世界',
+        img: '/wow.jpeg',
+        desc: '为了艾泽拉斯！在宏大的奇幻世界中探索、战斗与社交。'
+      }
+    ]
+  },
+  {
+    id: 'outdoor',
+    title: '户外',
+    color: 'text-teal-400',
+    items: [
+      {
+        title: '徒步 & 探索自然',
+        img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80',
+        desc: '远离城市喧嚣，用双脚丈量大地，感受森林与山川的呼吸。'
+      },
+      {
+        title: '自驾 & 骑行',
+        img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80',
+        desc: '风是自由的。骑上摩托，穿梭在城市与旷野之间，享受路途本身。'
+      },
+      {
+        title: '滑雪',
+        img: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80',
+        desc: '在银装素裹的世界中飞驰，掌控平衡，享受速度带来的肾上腺素。'
+      },
+      {
+        title: '游泳',
+        img: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&q=80',
+        desc: '像鱼一样自由。在水中舒展身体，释放所有的重力与压力。'
+      }
+    ]
+  },
+  {
+    id: 'reading',
+    title: '阅读',
+    color: 'text-amber-400',
+    items: [
+      {
+        title: '历史',
+        img: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80',
+        desc: '以史为鉴。在字里行间探寻人类文明的兴衰演变与规律。'
+      },
+      {
+        title: '科幻',
+        img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80',
+        desc: '仰望星空。沉浸在《三体》、《沙丘》等宏大叙事中，畅想技术与伦理的未来。'
+      }
+    ]
+  },
+  {
+    id: 'music',
+    title: '音乐',
+    color: 'text-purple-400',
+    items: [
+      {
+        title: '竹笛',
+        img: '/zd.jpg',
+        desc: '虽然技艺不精，但喜爱那份悠扬婉转，感受传统乐器的清雅之音。'
+      },
+      {
+        title: '陶笛',
+        img: '/td.png',
+        desc: '古朴深沉，小巧随身。在闲暇时刻吹奏一曲，自娱自乐。'
+      }
+    ]
+  }
+];
 
+// 提取的子组件：单个展示卡片
+const InterestCard = ({ item }) => (
+  <motion.div
+    whileHover={{ y: -5 }}
+    className="bg-slate-900 rounded-xl border border-slate-800 p-4 h-full flex flex-col hover:border-slate-700 transition-colors"
+  >
+    <h3 className="font-bold text-white mb-3 text-lg">{item.title}</h3>
+    <div className="rounded-lg overflow-hidden border border-slate-800 shadow-lg mb-4 bg-slate-950 aspect-video relative group">
+      <img
+        src={item.img}
+        alt={item.title}
+        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+        loading="lazy"
+      />
+      {/* 遮罩，增加质感 */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+    </div>
+    {item.desc && (
+      <p className="text-sm text-slate-400 leading-relaxed mt-auto">
+        {item.desc}
+      </p>
+    )}
+  </motion.div>
+);
+
+function ProjectDetailInterest() {
   return (
     <div className="flex min-h-screen bg-slate-950 text-white">
       {/* 1. 固定侧边导航栏 */}
-      <motion.nav 
+      <motion.nav
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         className="w-64 h-screen sticky top-0 border-r border-slate-800 p-6 flex flex-col hidden md:flex"
       >
-        <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2">
+        <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2 font-medium">
           <span>←</span> 返回主页
         </Link>
 
         <div className="space-y-6">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">目录</p>
-          <ul className="space-y-4">
-            {navItems.map((item) => (
-              <li key={item.id}>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">目录</p>
+          <ul className="space-y-2">
+            {interestData.map((section) => (
+              <li key={section.id}>
                 <button
                   onClick={() => {
-                    // 1. 找到对应的 DOM 元素
-                    const element = document.getElementById(item.id);
-                    // 2. 执行平滑滚动
-                    if (element) {
-                      element.scrollIntoView({ 
-                        behavior: 'smooth', 
-                        block: 'start' 
-                      });
-                    }
+                    document.getElementById(section.id)?.scrollIntoView({
+                      behavior: 'smooth',
+                      block: 'start'
+                    });
                   }}
-                  className="text-slate-400 hover:text-teal-400 transition-colors block text-sm text-left w-full cursor-pointer"
+                  className="text-slate-400 hover:text-teal-400 hover:bg-slate-900 px-3 py-2 rounded-lg transition-all block text-sm text-left w-full cursor-pointer"
                 >
-                  {item.name}
+                  {section.title}
                 </button>
               </li>
             ))}
@@ -54,209 +168,81 @@ function ProjectDetailInterest() {
       </motion.nav>
 
       {/* 2. 主内容区域 */}
-      <motion.main 
+      <motion.main
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex-1 p-8 md:p-16 max-w-4xl"
+        className="flex-1 p-6 md:p-16 max-w-5xl mx-auto"
       >
-        {/* 移动端返回按钮 (仅在小屏幕显示) */}
-        <Link to="/" className="md:hidden text-teal-400 mb-6 block">← 返回主页</Link>
+        {/* 移动端返回按钮 */}
+        <Link to="/" className="md:hidden text-teal-400 mb-8 inline-flex items-center gap-2 border border-slate-800 px-4 py-2 rounded-full text-sm bg-slate-900/50">
+          ← 返回主页
+        </Link>
 
-        {/* 项目标题 */}
-        <motion.header 
-          id="overview" 
-          className="mb-16 relative"
+        {/* 页面头部 */}
+        <motion.header
+          id="overview"
+          className="mb-20 relative"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          transition={{ duration: 0.8 }}
         >
-          {/* 背景装饰：一个淡淡的渐变光晕，增加空间感 */}
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-teal-500/10 blur-[80px] rounded-full"></div>
 
-          {/* 主标题 ABILITY */}
-          {/* <h2 className="text-6xl md:text-7xl font-black mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)]">
-            ABILITY
-          </h2> */}
-          <h2 className="text-6xl md:text-7xl font-black mb-4 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer drop-shadow-[0_10px_10px_rgba(0,0,0,0.3)]">
+          <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer">
             INTEREST
           </h2>
 
-          {/* 副标题 */}
-          <motion.p 
-            className="text-xl md:text-2xl text-slate-400 font-light tracking-[0.2em] uppercase"
+          <motion.p
+            className="text-lg md:text-2xl text-slate-400 font-light tracking-[0.2em] uppercase"
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 1 }}
+            transition={{ delay: 0.4 }}
           >
-             <span className="text-teal-400 font-medium relative">
+            <span className="text-teal-400 font-medium relative inline-block">
               Fall into some things
-              {/* 文字下方的渐变线条 */}
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-transparent"></span>
-            </span>!
+            </span>
           </motion.p>
         </motion.header>
 
-        {/* 项目图片 */}
-        <section className="mb-16">
-          <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-            <img 
-              src="/interest.jpg" 
-              alt="Project" 
-              className="w-full h-auto object-cover"
+        {/* 顶部主图 */}
+        <section className="mb-20">
+          <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl relative">
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent z-10 pointer-events-none"></div>
+            <img
+              src="/interest.jpg"
+              alt="Interest Cover"
+              className="w-full h-[300px] md:h-[400px] object-cover"
             />
-          </div>
-        </section>
-
-        {/* 游戏部分 */}
-        <section id="game" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-red-500">游戏</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">永劫无间</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/yj.webp" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">死亡搁浅</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/ds.jpg" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">荒野大镖客</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/rd.jpg" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">仙剑奇侠传</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/xj.jpeg" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">鬼泣</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/dmc.webp" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">wow</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/wow.jpeg" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
+            <div className="absolute bottom-6 left-6 right-6 z-20">
+              <p className="text-slate-300 max-w-2xl text-sm md:text-base italic">
+                “我们所热爱的不仅仅是事物本身，更是它们让我们感受到的那个世界。”
+              </p>
             </div>
           </div>
         </section>
 
-        {/* 户外部分 */}
-        <section id="outdoor" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-teal-400">户外</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-300">
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">徒步</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/yj.webp" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
+        {/* 循环渲染各个板块 */}
+        {interestData.map((section, idx) => (
+          <section key={section.id} id={section.id} className="mb-20 scroll-mt-10">
+            <div className="flex items-center gap-4 mb-8">
+              <h2 className={`text-3xl font-bold ${section.color}`}>{section.title}</h2>
+              <div className="h-[1px] bg-slate-800 flex-1"></div>
             </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">自驾</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/yj.webp" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">滑雪</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/yj.webp" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-            <div className="p-4 bg-slate-900 rounded-lg border border-slate-800">
-              <h3 className="font-bold text-white mb-2">游泳</h3>
-              <section className="mb-2">
-                <div className="rounded-2xl overflow-hidden border border-slate-800 shadow-2xl">
-                  <img 
-                    src="/yj.webp" 
-                    alt="Project" 
-                    className="w-full h-auto object-cover"
-                  />
-                </div>
-              </section>
-            </div>
-          </div>
-        </section>
 
-        {/* 音乐 */}
-        <section id="music" className="mb-16">
-          <h2 className="text-3xl font-bold mb-6 text-sky-400">音乐</h2>
-          <ul className="list-disc list-inside space-y-4 text-slate-300">
-            <li><span className="text-white font-semibold">响应式设计：</span> 完美适配手机、平板和桌面端。</li>
-            <li><span className="text-white font-semibold">流体动画：</span> 所有的入场和交互均有微动效。</li>
-            <li><span className="text-white font-semibold">自动化部署：</span> 每次 Push 都会通过 GitHub Actions 自动上线。</li>
-          </ul>
-        </section>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+              {section.items.map((item, i) => (
+                <InterestCard key={i} item={item} />
+              ))}
+            </div>
+          </section>
+        ))}
 
-        {/* 底部占位，方便演示目录跳转 */}
-        <section id="others" className="h-64">
-          <h2 className="text-3xl font-bold mb-6 text-purple-400">其他</h2>
-          <p className="text-slate-300">在这个项目中，我深刻体会到了现代前端工具链带来的效率提升...</p>
-        </section>
+        <div className="h-32 text-center text-slate-600 flex items-center justify-center text-sm">
+          Life needs passions to keep going.
+        </div>
+
       </motion.main>
     </div>
   );
