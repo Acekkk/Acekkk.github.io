@@ -223,11 +223,52 @@ function Home() {
             </Link>
           </motion.section>
 
+          {/* 博客入口 */}
+          <motion.section variants={itemVariants}>
+            <Link to="/blog">
+              <motion.div
+                whileHover={{ scale: 1.02, borderColor: 'rgba(96, 165, 250, 0.5)' }}
+                whileTap={{ scale: 0.98 }}
+                className="p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-sky-500/10 border border-white/10 hover:border-blue-500/30 transition-all cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-blue-400 to-sky-500 flex items-center justify-center text-3xl shadow-lg shadow-blue-500/20">
+                      📚
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">
+                        我的文字
+                      </h3>
+                      <p className="text-slate-400 text-sm">
+                        探索我的文字世界
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-blue-400 text-2xl group-hover:translate-x-2 transition-transform">
+                    →
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          </motion.section>
+
+
+
           <WoodFish />
         </main>
 
         <motion.footer variants={itemVariants} className="mt-16 text-center text-slate-600 text-[10px] tracking-widest uppercase">
-          © 2026-01-04 Liu Bikun  contact:804872510@qq.com
+          <div className="flex items-center justify-center gap-2">
+            <span>© 2026-01-04 Liu Bikun  contact:804872510@qq.com</span>
+            <Link
+              to="/login"
+              className="inline-block opacity-30 hover:opacity-100 transition-opacity duration-300"
+              title="Admin"
+            >
+              <span className="text-[8px]">🔐</span>
+            </Link>
+          </div>
         </motion.footer>
       </motion.div>
     </motion.div>

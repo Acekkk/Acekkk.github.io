@@ -2,11 +2,17 @@ import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-d
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { AuthProvider } from './contexts/AuthContext';
 import Home from './pages/Home';
 import ProjectDetailMywork from './pages/ProjectDetailMywork';
 import ProjectDetailIntro from './pages/ProjectDetailIntro';
 import ProjectDetailInterest from './pages/ProjectDetailInterest';
 import GuestBook from './pages/GuestBook';
+import Login from './pages/Login';
+import BlogList from './pages/BlogList';
+import BlogPost from './pages/BlogPost';
+import Dashboard from './pages/admin/Dashboard';
+import ProtectedRoute from './pages/admin/ProtectedRoute';
 
 // 路由动画包装器
 function AnimatedRoutes() {
@@ -20,6 +26,20 @@ function AnimatedRoutes() {
         <Route path="/projectintro/:id" element={<ProjectDetailIntro />} />
         <Route path="/projectinterest/:id" element={<ProjectDetailInterest />} />
         <Route path="/guestbook" element={<GuestBook />} />
+
+        {/* 博客路由 */}
+        <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
+
+        {/* 登录 */}
+        <Route path="/login" element={<Login />} />
+
+        {/* 管理后台 */}
+        <Route path="/admin" element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        } />
       </Routes>
     </AnimatePresence>
   );
@@ -27,11 +47,13 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <LanguageProvider>
-      <Router>
-        <AnimatedRoutes />
-      </Router>
-    </LanguageProvider>
+    <AuthProvider>
+      <LanguageProvider>
+        <Router>
+          <AnimatedRoutes />
+        </Router>
+      </LanguageProvider>
+    </AuthProvider>
   );
 }
 
