@@ -99,7 +99,13 @@ const IntroCard = ({ item }) => (
 
 function ProjectDetailIntro() {
   return (
-    <div className="flex min-h-screen bg-slate-950 text-white">
+    <motion.div
+      className="flex min-h-screen bg-slate-950 text-white"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       {/* 1. 固定侧边导航栏 */}
       <motion.nav
         initial={{ x: -100, opacity: 0 }}
@@ -213,7 +219,7 @@ function ProjectDetailIntro() {
         </div>
 
       </motion.main>
-    </div>
+    </motion.div>
   );
 }
 

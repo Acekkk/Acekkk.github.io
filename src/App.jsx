@@ -1,21 +1,33 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import React from 'react';
+import { AnimatePresence } from 'framer-motion';
 import Home from './pages/Home';
 import ProjectDetailMywork from './pages/ProjectDetailMywork';
 import ProjectDetailIntro from './pages/ProjectDetailIntro';
 import ProjectDetailInterest from './pages/ProjectDetailInterest';
+import GuestBook from './pages/GuestBook';
 
-function App() {
+// 路由动画包装器
+function AnimatedRoutes() {
+  const location = useLocation();
+
   return (
-    // 使用 HashRouter 对 GitHub Pages 兼容性最好，避免刷新 404
-    <Router>
-      <Routes>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
         <Route path="/projectwork/:id" element={<ProjectDetailMywork />} />
         <Route path="/projectintro/:id" element={<ProjectDetailIntro />} />
         <Route path="/projectinterest/:id" element={<ProjectDetailInterest />} />
+        <Route path="/guestbook" element={<GuestBook />} />
       </Routes>
-      {/* <WoodFish /> */}
+    </AnimatePresence>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AnimatedRoutes />
     </Router>
   );
 }

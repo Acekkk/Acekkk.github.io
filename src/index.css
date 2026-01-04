@@ -1,11 +1,316 @@
 @import "tailwindcss";
 
+/* ============================================
+   字体配置
+   ============================================ */
+
+/* 全局字体设置 */
 html {
   scroll-behavior: smooth;
 }
 
+body {
+  /* 优先使用 Inter，中文回退到 Noto Sans SC，最后使用系统字体 */
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  /* 启用字体特性：更好的数字、分数等 */
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv09';
+  /* 字体平滑渲染 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
 
-/* 强制增加背景尺寸，否则渐变动不起来 */
+/* 代码和等宽字体 */
+code,
+pre,
+kbd,
+samp,
+.monospace {
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', 'Courier New', monospace;
+  /* 禁用连字，保持代码清晰 */
+  font-feature-settings: 'liga' 0;
+}
+
+/* 标题字体加粗优化 */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Inter', 'Noto Sans SC', sans-serif;
+  font-weight: 700;
+  /* 紧凑字距，标题更有力 */
+  letter-spacing: -0.02em;
+}
+
+/* 数字使用表格数字（等宽，便于对齐） */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================
+   动画和特效
+   ============================================ */
+
+/* 自定义渐变动画 - 让标题更炫酷 */
 .animate-text-shimmer {
   background-size: 200% auto;
+  animation: textShimmer 3s ease-in-out infinite;
+}
+
+@keyframes textShimmer {
+
+  0%,
+  100% {
+    background-position: 0% center;
+  }
+
+  50% {
+    background-position: 100% center;
+  }
+}
+
+/* 玻璃态效果增强 */
+.glass-effect {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* 悬浮发光效果 */
+.glow-on-hover {
+  transition: all 0.3s ease;
+}
+
+.glow-on-hover:hover {
+  box-shadow:
+    0 0 20px rgba(20, 184, 166, 0.3),
+    0 0 40px rgba(20, 184, 166, 0.2),
+    0 0 60px rgba(20, 184, 166, 0.1);
+  border-color: rgba(20, 184, 166, 0.5);
+}
+
+/* 渐变边框动画 */
+.animated-border {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-border::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(45deg, #14b8a6, #8b5cf6, #ec4899, #14b8a6);
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  animation: borderRotate 3s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.animated-border:hover::before {
+  opacity: 1;
+}
+
+@keyframes borderRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 卡片脉冲效果 */
+@keyframes cardPulse {
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 20px 10px rgba(20, 184, 166, 0);
+  }
+}
+
+.pulse-card:hover {
+  animation: cardPulse 2s infinite;
+}
+
+/* 平滑渐变背景 */
+.gradient-bg {
+  background: linear-gradient(135deg,
+      rgba(20, 184, 166, 0.05) 0%,
+      rgba(139, 92, 246, 0.05) 50%,
+      rgba(236, 72, 153, 0.05) 100%);
+}
+
+/* 文字渐变效果增强 */
+.text-gradient {
+  background: linear-gradient(135deg,
+      #14b8a6 0%,
+      #0ea5e9 25%,
+      #8b5cf6 50%,
+      #ec4899 75%,
+      #14b8a6 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #14b8a6, #8b5cf6);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #0ea5e9, #ec4899);
+}
+
+/* ============================================
+   移动端优化
+   ============================================ */
+
+/* 安全区域支持（刘海屏等） */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+}
+
+/* 触摸设备优化 */
+@media (hover: none) and (pointer: coarse) {
+
+  /* 增大触摸区域 */
+  button,
+  a,
+  .interactive {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* 禁用悬停效果，避免触摸后残留 */
+  .glow-on-hover:hover {
+    box-shadow: none;
+  }
+
+  /* 使用点击效果代替悬停 */
+  button:active,
+  a:active,
+  .interactive:active {
+    transform: scale(0.95);
+    transition: transform 0.1s;
+  }
+}
+
+/* 移动端滚动优化 */
+@media (max-width: 768px) {
+  * {
+    /* iOS 平滑滚动 */
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* 防止文本选择（提升触摸体验） */
+  body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* 允许输入框和文本内容选择 */
+  input,
+  textarea,
+  p,
+  span,
+  .selectable {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* 移动端字体微调 */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+}
+
+/* 触摸反馈动画 */
+.tap-feedback {
+  position: relative;
+  overflow: hidden;
+}
+
+.tap-feedback::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s, opacity 0.6s;
+  opacity: 0;
+}
+
+.tap-feedback:active::after {
+  width: 200px;
+  height: 200px;
+  opacity: 0.3;
+  transition: width 0s, height 0s, opacity 0s;
+}
+
+/* 横屏优化 */
+@media (max-height: 500px) and (orientation: landscape) {
+
+  /* 减小垂直间距 */
+  .container {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* 小屏幕文字缩放 */
+@media (max-width: 375px) {
+  html {
+    font-size: 14px;
+  }
+}
+
+/* 防止双击缩放 */
+* {
+  touch-action: manipulation;
+}
+
+/* 优化按钮点击延迟 */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
 }

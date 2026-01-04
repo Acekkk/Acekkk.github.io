@@ -117,29 +117,38 @@ function Home() {
       className="relative min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 sm:p-8 overflow-x-hidden"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3 }}
     >
       {/* 掉落背景层 */}
       <RainEffect />
 
-      {/* 装饰光晕 */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+      {/* 多层渐变光晕 - 创建更丰富的背景氛围 */}
+      <div className="fixed top-1/4 right-1/4 w-[600px] h-[600px] bg-teal-500/10 blur-[150px] rounded-full pointer-events-none animate-pulse"></div>
+      <div className="fixed bottom-1/4 left-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-sky-500/5 blur-[100px] rounded-full pointer-events-none"></div>
 
       <motion.div
-        className="container relative z-10 max-w-4xl w-full mx-auto p-6 sm:p-10 bg-slate-900/40 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/5"
+        className="container relative z-10 max-w-4xl w-full mx-auto p-6 sm:p-10 glass-effect rounded-3xl shadow-2xl"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.header variants={itemVariants} className="mb-12 text-center">
-          <motion.img
-            src="/Avatar.jpg"
-            className="w-32 h-32 rounded-full border-4 border-teal-500/50 shadow-2xl mx-auto mb-6 object-cover"
-            whileHover={{ scale: 1.1, rotate: 5 }}
-          />
-          <h1 className="text-4xl sm:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500">
+          <div className="relative inline-block mb-6">
+            {/* 头像发光效果 */}
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-teal-400 to-purple-500 blur-xl opacity-50 animate-pulse"></div>
+            <motion.img
+              src="/Avatar.jpg"
+              className="relative w-32 h-32 rounded-full border-4 border-transparent bg-gradient-to-br from-teal-400 via-sky-400 to-purple-500 p-1 shadow-2xl object-cover"
+              whileHover={{ scale: 1.1, rotate: 5 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            />
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-black mb-4 text-gradient animate-text-shimmer">
             你好！这里是刘碧坤
           </h1>
-          <p className="text-slate-400 max-w-md mx-auto italic">
+          <p className="text-slate-400 max-w-md mx-auto italic text-lg">
             探索技术边界，积攒赛博功德。
           </p>
         </motion.header>
@@ -175,6 +184,36 @@ function Home() {
               </div>
             </motion.section>
           ))}
+
+          {/* 留言板入口 */}
+          <motion.section variants={itemVariants}>
+            <Link to="/guestbook">
+              <motion.div
+                whileHover={{ scale: 1.02, borderColor: 'rgba(20, 184, 166, 0.5)' }}
+                whileTap={{ scale: 0.98 }}
+                className="p-6 rounded-2xl bg-gradient-to-r from-teal-500/10 to-purple-500/10 border border-white/10 hover:border-teal-500/30 transition-all cursor-pointer group"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-400 to-purple-500 flex items-center justify-center text-3xl shadow-lg shadow-teal-500/20">
+                      📝
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-1 group-hover:text-teal-400 transition-colors">
+                        留言板
+                      </h3>
+                      <p className="text-slate-400 text-sm">
+                        留下您的足迹，分享您的想法
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-teal-400 text-2xl group-hover:translate-x-2 transition-transform">
+                    →
+                  </div>
+                </div>
+              </motion.div>
+            </Link>
+          </motion.section>
 
           <WoodFish />
         </main>
