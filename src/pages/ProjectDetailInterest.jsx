@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from '../i18n/translations';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 // 数据配置：只要在这里修改，页面就会自动更新
 const interestData = [
@@ -129,6 +132,9 @@ const InterestCard = ({ item }) => (
 );
 
 function ProjectDetailInterest() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+
   return (
     <motion.div
       className="flex min-h-screen bg-slate-950 text-white"
@@ -137,6 +143,9 @@ function ProjectDetailInterest() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* 语言切换按钮 */}
+      <LanguageSwitcher />
+
       {/* 1. 固定侧边导航栏 */}
       <motion.nav
         initial={{ x: -100, opacity: 0 }}
@@ -144,11 +153,11 @@ function ProjectDetailInterest() {
         className="w-64 h-screen sticky top-0 border-r border-slate-800 p-6 flex flex-col hidden md:flex"
       >
         <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2 font-medium">
-          <span>←</span> 返回主页
+          <span>←</span> {t.backToHome}
         </Link>
 
         <div className="space-y-6">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">目录</p>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">{t.detailPages.interest.nav}</p>
           <ul className="space-y-2">
             {interestData.map((section) => (
               <li key={section.id}>
@@ -196,7 +205,7 @@ function ProjectDetailInterest() {
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-teal-500/10 blur-[80px] rounded-full"></div>
 
           <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer">
-            INTEREST
+            {t.detailPages.interest.title}
           </h2>
 
           <motion.p
@@ -206,7 +215,7 @@ function ProjectDetailInterest() {
             transition={{ delay: 0.4 }}
           >
             <span className="text-teal-400 font-medium relative inline-block">
-              Fall into some things
+              {t.detailPages.interest.subtitle}
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-transparent"></span>
             </span>
           </motion.p>
@@ -223,7 +232,7 @@ function ProjectDetailInterest() {
             />
             <div className="absolute bottom-6 left-6 right-6 z-20">
               <p className="text-slate-300 max-w-2xl text-sm md:text-base italic">
-                “我们所热爱的不仅仅是事物本身，更是它们让我们感受到的那个世界。”
+                “                {t.detailPages.interest.quote}”
               </p>
             </div>
           </div>
@@ -246,7 +255,7 @@ function ProjectDetailInterest() {
         ))}
 
         <div className="h-32 text-center text-slate-600 flex items-center justify-center text-sm">
-          Life needs passions to keep going.
+          {t.detailPages.interest.footer}
         </div>
 
       </motion.main>

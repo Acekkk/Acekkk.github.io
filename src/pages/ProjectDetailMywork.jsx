@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from '../i18n/translations';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 // 数据配置：工作技能/技术栈
 const workData = [
@@ -101,6 +104,9 @@ const WorkCard = ({ item }) => (
 );
 
 function ProjectDetailMywork() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+
   return (
     <motion.div
       className="flex min-h-screen bg-slate-950 text-white"
@@ -109,6 +115,9 @@ function ProjectDetailMywork() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* 语言切换按钮 */}
+      <LanguageSwitcher />
+
       {/* 1. 固定侧边导航栏 */}
       <motion.nav
         initial={{ x: -100, opacity: 0 }}
@@ -116,11 +125,11 @@ function ProjectDetailMywork() {
         className="w-64 h-screen sticky top-0 border-r border-slate-800 p-6 flex flex-col hidden md:flex"
       >
         <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2 font-medium">
-          <span>←</span> 返回主页
+          <span>←</span> {t.backToHome}
         </Link>
 
         <div className="space-y-6">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">技能树</p>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">{t.detailPages.ability.nav}</p>
           <ul className="space-y-2">
             {workData.map((section) => (
               <li key={section.id}>
@@ -168,7 +177,7 @@ function ProjectDetailMywork() {
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-teal-500/10 blur-[80px] rounded-full"></div>
 
           <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer">
-            ABILITY
+            {t.detailPages.ability.title}
           </h2>
 
           <motion.p
@@ -178,7 +187,7 @@ function ProjectDetailMywork() {
             transition={{ delay: 0.4 }}
           >
             <span className="text-teal-400 font-medium relative inline-block">
-              Change some things
+              {t.detailPages.ability.subtitle}
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-transparent"></span>
             </span>
           </motion.p>
@@ -195,7 +204,7 @@ function ProjectDetailMywork() {
             />
             <div className="absolute bottom-6 left-6 right-6 z-20">
               <p className="text-slate-300 max-w-2xl text-sm md:text-base italic">
-                “技术是改变世界的支点，而每一行代码都是杠杆的一部分。”
+                “                {t.detailPages.ability.quote}”
               </p>
             </div>
           </div>
@@ -218,7 +227,7 @@ function ProjectDetailMywork() {
         ))}
 
         <div className="h-32 text-center text-slate-600 flex items-center justify-center text-sm">
-          Keep coding, keep learning.
+          {t.detailPages.ability.footer}
         </div>
 
       </motion.main>

@@ -1,6 +1,9 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion'; // 核心：必须引入 AnimatePresence
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from '../i18n/translations';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 // --- 特效组件：掉落雨 ---
 const RainEffect = () => {
@@ -46,15 +49,17 @@ const RainEffect = () => {
 
 // --- 功能组件：电子木鱼 ---
 const WoodFish = () => {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
   const [count, setCount] = React.useState(0);
   const [popups, setPopups] = React.useState([]);
 
   const handleClick = () => {
     const nextCount = count + 1;
     setCount(nextCount);
-    let popupText = "功德 +1";
-    if (nextCount > 100) popupText = "功德圆满 🙏";
-    else if (nextCount % 10 === 0) popupText = "烦恼消散 ✨";
+    let popupText = language === 'zh' ? "功德 +1" : "Merit +1";
+    if (nextCount > 100) popupText = language === 'zh' ? "功德圆满 🙏" : "Perfect Merit 🙏";
+    else if (nextCount % 10 === 0) popupText = language === 'zh' ? "烦恼消散 ✨" : "Worries Gone ✨";
 
     const newPopup = { id: Date.now(), text: popupText };
     setPopups(prev => [...prev, newPopup]);
@@ -65,9 +70,9 @@ const WoodFish = () => {
 
   return (
     <div className="flex flex-col items-center justify-center p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-md mt-10 relative overflow-hidden max-w-sm mx-auto mb-10 shadow-2xl">
-      <div className="text-slate-500 text-[10px] mb-4 uppercase tracking-[0.3em] font-bold">Cyber Temple</div>
+      <div className="text-slate-500 text-[10px] mb-4 uppercase tracking-[0.3em] font-bold">{t.cyberTemple}</div>
       <div className="text-4xl font-black text-white mb-8 tracking-tighter">
-        功德数：<span className={count >= 100 ? "text-yellow-400" : "text-teal-400"}>{count}</span>
+        {t.meritCount}：<span className={count >= 100 ? "text-yellow-400" : "text-teal-400"}>{count}</span>
       </div>
       <div className="relative cursor-pointer select-none active:scale-95 transition-transform" onClick={handleClick}>
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 text-center pointer-events-none">
@@ -99,6 +104,9 @@ const WoodFish = () => {
 
 // --- 页面主体 ---
 function Home() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -123,6 +131,9 @@ function Home() {
       {/* 掉落背景层 */}
       <RainEffect />
 
+      {/* 语言切换按钮 */}
+      <LanguageSwitcher />
+
       {/* 多层渐变光晕 - 创建更丰富的背景氛围 */}
       <div className="fixed top-1/4 right-1/4 w-[600px] h-[600px] bg-teal-500/10 blur-[150px] rounded-full pointer-events-none animate-pulse"></div>
       <div className="fixed bottom-1/4 left-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
@@ -146,29 +157,26 @@ function Home() {
             />
           </div>
           <h1 className="text-4xl sm:text-5xl font-black mb-4 text-gradient animate-text-shimmer">
-            你好！这里是刘碧坤
+            {t.greeting}
           </h1>
           <p className="text-slate-400 max-w-md mx-auto italic text-lg">
-            探索技术边界，积攒赛博功德。
+            {t.tagline}
           </p>
         </motion.header>
 
         <main className="space-y-10">
           {/* 统一的渲染块函数，减少重复代码 */}
           {[
-            { title: "个人介绍", link: "/projectintro/intro", items: ["一名对技术充满热情的探索者", "致力于通过技术解决实际问题", "乐于学习新知识，挑战未知"] },
-            {
-              title: "兴趣爱好", link: "/projectinterest/interest", items: ["游戏：死亡搁浅、大镖客、永劫无间、仙剑...", "户外：徒步和探索自然、闲逛、骑摩托、游泳...",
-                "阅读：历史与科幻", "音乐：竹笛、陶笛爱好者，喜欢玩但都不太会"]
-            },
-            { title: "技术能力", link: "/projectwork/work", items: ["自动驾驶相关技术(算法、中间件、基础设施等)", "港口机械自动化 (算法、业务等)", "现代前端开发 (React, Tailwind)"] }
+            { title: t.introduction, link: "/projectintro/intro", items: t.introItems },
+            { title: t.interests, link: "/projectinterest/interest", items: t.interestItems },
+            { title: t.skills, link: "/projectwork/work", items: t.skillItems }
           ].map((sec, idx) => (
             <motion.section key={idx} variants={itemVariants}>
               <div className="flex items-center gap-4 mb-4">
                 <h2 className="text-2xl font-bold text-white">{sec.title}</h2>
                 <Link to={sec.link}>
                   <motion.div whileHover={{ scale: 1.05 }} className="px-3 py-1 rounded-full border border-teal-500/30 text-teal-400 text-xs backdrop-blur-sm">
-                    查看详情 →
+                    {t.viewDetails} →
                   </motion.div>
                 </Link>
               </div>
@@ -219,7 +227,7 @@ function Home() {
         </main>
 
         <motion.footer variants={itemVariants} className="mt-16 text-center text-slate-600 text-[10px] tracking-widest uppercase">
-          © 2025-12-30 Liu Bikun  contact:804872510@qq.com
+          © 2026-01-04 Liu Bikun  contact:804872510@qq.com
         </motion.footer>
       </motion.div>
     </motion.div>

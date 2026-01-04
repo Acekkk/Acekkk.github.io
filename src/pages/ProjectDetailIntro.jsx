@@ -1,5 +1,8 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTranslation } from '../i18n/translations';
+import { LanguageSwitcher } from '../components/LanguageSwitcher';
 
 // 数据配置：个人生活轨迹/成长经历
 const introData = [
@@ -98,6 +101,9 @@ const IntroCard = ({ item }) => (
 );
 
 function ProjectDetailIntro() {
+  const { language } = useLanguage();
+  const t = useTranslation(language);
+
   return (
     <motion.div
       className="flex min-h-screen bg-slate-950 text-white"
@@ -106,6 +112,9 @@ function ProjectDetailIntro() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
     >
+      {/* 语言切换按钮 */}
+      <LanguageSwitcher />
+
       {/* 1. 固定侧边导航栏 */}
       <motion.nav
         initial={{ x: -100, opacity: 0 }}
@@ -113,11 +122,11 @@ function ProjectDetailIntro() {
         className="w-64 h-screen sticky top-0 border-r border-slate-800 p-6 flex flex-col hidden md:flex"
       >
         <Link to="/" className="text-teal-400 hover:text-teal-300 mb-10 flex items-center gap-2 font-medium">
-          <span>←</span> 返回主页
+          <span>←</span> {t.backToHome}
         </Link>
 
         <div className="space-y-6">
-          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">时间线</p>
+          <p className="text-xs font-bold text-slate-500 uppercase tracking-widest pl-2 border-l-2 border-slate-700">{t.detailPages.intro.nav}</p>
           <ul className="space-y-2">
             {introData.map((section) => (
               <li key={section.id}>
@@ -165,7 +174,7 @@ function ProjectDetailIntro() {
           <div className="absolute -top-10 -left-10 w-32 h-32 bg-teal-500/10 blur-[80px] rounded-full"></div>
 
           <h2 className="text-5xl md:text-7xl font-black mb-6 tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500 animate-text-shimmer">
-            INTRODUCTION
+            {t.detailPages.intro.title}
           </h2>
 
           <motion.p
@@ -175,7 +184,7 @@ function ProjectDetailIntro() {
             transition={{ delay: 0.4 }}
           >
             <span className="text-teal-400 font-medium relative inline-block">
-              Record life trajectory
+              {t.detailPages.intro.subtitle}
               <span className="absolute bottom-0 left-0 w-full h-[2px] bg-gradient-to-r from-teal-400 to-transparent"></span>
             </span>
           </motion.p>
@@ -192,7 +201,7 @@ function ProjectDetailIntro() {
             />
             <div className="absolute bottom-6 left-6 right-6 z-20">
               <p className="text-slate-300 max-w-2xl text-sm md:text-base italic">
-                “人生是一场漫长的旅程，重要的不是目的地，而是沿途的风景。”
+                “                {t.detailPages.intro.quote}”
               </p>
             </div>
           </div>
@@ -215,7 +224,7 @@ function ProjectDetailIntro() {
         ))}
 
         <div className="h-32 text-center text-slate-600 flex items-center justify-center text-sm">
-          To be continued...
+          {t.detailPages.intro.footer}
         </div>
 
       </motion.main>

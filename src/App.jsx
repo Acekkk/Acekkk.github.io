@@ -1,6 +1,7 @@
 import { HashRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import React from 'react';
 import { AnimatePresence } from 'framer-motion';
+import { LanguageProvider } from './contexts/LanguageContext';
 import Home from './pages/Home';
 import ProjectDetailMywork from './pages/ProjectDetailMywork';
 import ProjectDetailIntro from './pages/ProjectDetailIntro';
@@ -26,9 +27,11 @@ function AnimatedRoutes() {
 
 function App() {
   return (
-    <Router>
-      <AnimatedRoutes />
-    </Router>
+    <LanguageProvider>
+      <Router>
+        <AnimatedRoutes />
+      </Router>
+    </LanguageProvider>
   );
 }
 
