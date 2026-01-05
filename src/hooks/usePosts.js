@@ -105,16 +105,19 @@ export async function likePost(postId) {
                     .eq('post_id', postId)
                     .eq('user_fingerprint', fingerprint);
 
+                // 减少文章点赞数
+                await supabase.rpc('decrement_likes', {
+                    post_id: postId
+                });
+
                 return { liked: false };
             }
             throw error;
         }
 
         // 更新文章点赞数
-        await supabase.rpc('increment', {
-            row_id: postId,
-            table_name: 'posts',
-            column_name: 'likes'
+        await supabase.rpc('increment_likes', {
+            post_id: postId
         });
 
         return { liked: true };

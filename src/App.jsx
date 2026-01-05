@@ -13,6 +13,7 @@ import BlogList from './pages/BlogList';
 import BlogPost from './pages/BlogPost';
 import Dashboard from './pages/admin/Dashboard';
 import ProtectedRoute from './pages/admin/ProtectedRoute';
+import PostEditor from './pages/admin/PostEditor';
 
 // 路由动画包装器
 function AnimatedRoutes() {
@@ -38,6 +39,16 @@ function AnimatedRoutes() {
         <Route path="/admin" element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/new-post" element={
+          <ProtectedRoute>
+            <PostEditor />
+          </ProtectedRoute>
+        } />
+        <Route path="/admin/edit-post/:id" element={
+          <ProtectedRoute>
+            <PostEditor />
           </ProtectedRoute>
         } />
       </Routes>

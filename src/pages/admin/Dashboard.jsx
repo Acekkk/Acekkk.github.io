@@ -134,8 +134,8 @@ export default function Dashboard() {
                                     <div className="flex items-center gap-3">
                                         <h3 className="font-semibold">{post.title}</h3>
                                         <span className={`px-2 py-1 text-xs rounded ${post.published
-                                                ? 'bg-green-500/20 text-green-400'
-                                                : 'bg-yellow-500/20 text-yellow-400'
+                                            ? 'bg-green-500/20 text-green-400'
+                                            : 'bg-yellow-500/20 text-yellow-400'
                                             }`}>
                                             {post.published ? '已发布' : '草稿'}
                                         </span>
