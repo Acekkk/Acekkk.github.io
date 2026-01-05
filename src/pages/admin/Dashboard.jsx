@@ -112,6 +112,35 @@ export default function Dashboard() {
                     </div>
                 </div>
 
+                {/* 快捷入口 */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <Link
+                        to="/admin/new-post"
+                        className="glass-effect p-6 rounded-xl hover:border-teal-400/50 border border-white/10 transition-colors group"
+                    >
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="text-slate-400 text-sm mb-2">📝 文章管理</div>
+                                <div className="text-xl font-bold group-hover:text-teal-400 transition-colors">创建新文章</div>
+                            </div>
+                            <div className="text-3xl opacity-50 group-hover:opacity-100 transition-opacity">→</div>
+                        </div>
+                    </Link>
+
+                    <Link
+                        to="/admin/guestbook"
+                        className="glass-effect p-6 rounded-xl hover:border-purple-400/50 border border-white/10 transition-colors group"
+                    >
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="text-slate-400 text-sm mb-2">💬 留言管理</div>
+                                <div className="text-xl font-bold group-hover:text-purple-400 transition-colors">管理留言板</div>
+                            </div>
+                            <div className="text-3xl opacity-50 group-hover:opacity-100 transition-opacity">→</div>
+                        </div>
+                    </Link>
+                </div>
+
                 {/* 文章列表 */}
                 <div className="glass-effect rounded-xl p-6">
                     <div className="flex justify-between items-center mb-6">
