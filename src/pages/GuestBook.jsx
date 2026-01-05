@@ -10,6 +10,10 @@ function GuestBook() {
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [cooldownRemaining, setCooldownRemaining] = useState(0);
+
+    // 冷却时间（秒）
+    const COOLDOWN_SECONDS = 30;
 
     // 获取留言列表
     const fetchMessages = async () => {
@@ -46,6 +50,20 @@ function GuestBook() {
             return;
         }
 
+        // 检查冷却时间
+        const lastSubmitTime = localStorage.getItem('lastGuestbookSubmit');
+        if (lastSubmitTime) {
+            const timeSinceLastSubmit = Date.now() - parseInt(lastSubmitTime);
+            const cooldownMs = COOLDOWN_SECONDS * 1000;
+
+            if (timeSinceLastSubmit < cooldownMs) {
+                const remainingSeconds = Math.ceil((cooldownMs - timeSinceLastSubmit) / 1000);
+                setError(`请等待 ${remainingSeconds} 秒后再提交留言`);
+                setCooldownRemaining(remainingSeconds);
+                return;
+            }
+        }
+
         try {
             setSubmitting(true);
             setError(null);
@@ -61,6 +79,9 @@ function GuestBook() {
                 .select();
 
             if (error) throw error;
+
+            // 记录提交时间到 localStorage
+            localStorage.setItem('lastGuestbookSubmit', Date.now().toString());
 
             // 成功后重置表单并刷新列表
             setNewMessage({ name: '', content: '' });
@@ -99,6 +120,32 @@ function GuestBook() {
             subscription.unsubscribe();
         };
     }, []);
+
+    // 冷却倒计时
+    useEffect(() => {
+        if (cooldownRemaining <= 0) return;
+
+        const timer = setInterval(() => {
+            const lastSubmitTime = localStorage.getItem('lastGuestbookSubmit');
+            if (!lastSubmitTime) {
+                setCooldownRemaining(0);
+                return;
+            }
+
+            const timeSinceLastSubmit = Date.now() - parseInt(lastSubmitTime);
+            const cooldownMs = COOLDOWN_SECONDS * 1000;
+            const remaining = Math.ceil((cooldownMs - timeSinceLastSubmit) / 1000);
+
+            if (remaining <= 0) {
+                setCooldownRemaining(0);
+                setError(null);
+            } else {
+                setCooldownRemaining(remaining);
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [cooldownRemaining, COOLDOWN_SECONDS]);
 
     // 格式化时间
     const formatDate = (dateString) => {
@@ -305,15 +352,19 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
 
                         <motion.button
                             type="submit"
-                            disabled={submitting}
-                            whileHover={{ scale: submitting ? 1 : 1.02 }}
-                            whileTap={{ scale: submitting ? 1 : 0.98 }}
-                            className={`w-full py-3 rounded-xl font-bold transition-all ${submitting
-                                ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                                : 'bg-gradient-to-r from-teal-500 to-purple-500 hover:from-teal-400 hover:to-purple-400 text-white shadow-lg shadow-teal-500/20'
+                            disabled={submitting || cooldownRemaining > 0}
+                            whileHover={{ scale: (submitting || cooldownRemaining > 0) ? 1 : 1.02 }}
+                            whileTap={{ scale: (submitting || cooldownRemaining > 0) ? 1 : 0.98 }}
+                            className={`w-full py-3 rounded-xl font-bold transition-all ${submitting || cooldownRemaining > 0
+                                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
+                                    : 'bg-gradient-to-r from-teal-500 to-purple-500 hover:from-teal-400 hover:to-purple-400 text-white shadow-lg shadow-teal-500/20'
                                 }`}
                         >
-                            {submitting ? '提交中...' : '发布留言'}
+                            {submitting
+                                ? '提交中...'
+                                : cooldownRemaining > 0
+                                    ? `请等待 ${cooldownRemaining} 秒`
+                                    : '发布留言'}
                         </motion.button>
                     </form>
                 </motion.section>
