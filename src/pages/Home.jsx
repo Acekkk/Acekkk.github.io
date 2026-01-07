@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../i18n/translations';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
+import CryptoPrices from '../components/CryptoPrices';
 
 // --- 特效组件：掉落雨 ---
 const RainEffect = () => {
@@ -253,7 +254,8 @@ function Home() {
             </Link>
           </motion.section>
 
-
+          {/* 加密货币价格展示 */}
+          <CryptoPrices />
 
           <WoodFish />
         </main>
