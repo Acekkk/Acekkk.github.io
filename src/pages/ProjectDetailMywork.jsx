@@ -23,12 +23,12 @@ const workData = [
       },
       {
         title: '中间件技术 (Middleware)',
-        img: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80',
+        img: '/midware.jpg',
         desc: '熟练掌握 ROS/ROS2 及 CyberRT 等通信中间件，优化节点间的高吞吐量、低延迟数据传输。'
       },
       {
         title: '基础设施 (Infrastructure)',
-        img: 'https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80',
+        img: '/infra.jpg',
         desc: '构建仿真测试平台与数据闭环系统，实现 CI/CD 自动化部署，提升研发迭代效率。'
       }
     ]
@@ -55,25 +55,62 @@ const workData = [
       },
       {
         title: '业务逻辑 (Business)',
-        img: 'https://images.unsplash.com/photo-1532619675605-1ede6c2ed2b0?auto=format&fit=crop&q=80',
+        img: '/bussi.jpg',
         desc: '对接 TOS (码头操作系统)，深入理解并优化自动化装卸流程，解决实际运营痛点。'
       }
     ]
   },
   {
     id: 'frontend',
-    title: '现代前端开发',
+    title: '现代前后端开发',
     color: 'text-purple-400',
     items: [
       {
         title: 'React 生态',
-        img: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&q=80',
+        img: '/react.jpg',
         desc: '精通 React 18+，熟练使用 Hooks、Context API 进行组件化开发与状态管理，构建高性能 SPA。'
       },
       {
         title: 'Tailwind CSS',
-        img: 'https://images.unsplash.com/photo-1581276879432-15e50529f34b?auto=format&fit=crop&q=80',
+        img: '/tailwind.jpg',
         desc: '拥抱 Utility-First 理念，利用 Tailwind 快速构建现代化、响应式且美观的用户界面。'
+      },
+      {
+        title: 'Node.js',
+        img: '/nodejs.jpg',
+        desc: 'Node.js 让 JavaScript 统一前后端，用异步非阻塞架构实现高并发，配合 npm 生态快速构建高性能应用。'
+      },
+      {
+        title: 'web3',
+        img: '/web3.jpg',
+        desc: '通向未来。'
+      }
+    ]
+  },
+  {
+    id: 'embedded',
+    title: '嵌入式软硬件开发',
+    color: 'text-orange-400',
+    items: [
+      {
+        title: 'ARM 架构',
+        img: '/arm.jpg',
+        desc: '深入理解 ARM Cortex-M/A 系列架构，熟悉指令集、中断系统、内存管理单元（MMU）和缓存机制，能够进行底层驱动开发和性能优化。'
+      },
+      {
+        title: 'STM32 单片机',
+        img: '/stm32.jpg',
+        desc: '精通 STM32 系列微控制器开发，熟练使用 HAL/LL 库进行外设配置（GPIO、UART、SPI、I2C、ADC、Timer 等），实现多任务实时系统。'
+      },
+      {
+        title: 'Keil MDK',
+        img: '/keil.jpg',
+        desc: '熟练使用 Keil µVision IDE 进行嵌入式 C/C++ 开发，掌握调试技巧、仿真工具和代码优化，配合 JTAG/SWD 进行在线调试。'
+      },
+      {
+        title: 'Altium Designer',
+        img: '/ad.jpg',
+        desc: '具备 PCB 设计能力，使用 Altium Designer 进行原理图绘制、PCB 布局布线、DRC 检查，完成从原理到生产的完整硬件设计流程。'
       }
     ]
   }

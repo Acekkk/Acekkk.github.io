@@ -32,7 +32,8 @@ export const translations = {
         skillItems: [
             '自动驾驶相关技术(算法、中间件、基础设施等)',
             '港口机械自动化 (算法、业务等)',
-            '现代前端开发 (React, Tailwind)'
+            '现代前后端开发 (React, Tailwind, Node.js)',
+            '嵌入式软硬件 (keil、AD、ARM、STM32等)'
         ],
 
         // 按钮文字
@@ -126,7 +127,8 @@ export const translations = {
         skillItems: [
             'Autonomous Driving (Algorithms, Middleware, Infrastructure)',
             'Port Mechanical Automation (Algorithms, Business Logic)',
-            'Modern Frontend Development (React, Tailwind)'
+            'Modern front-end and back-end development (React, Tailwind, Node.js)',
+            'Embedded software and hardware (keil, AD, ARM, STM32, etc.)'
         ],
 
         // Buttons

@@ -69,7 +69,7 @@ const introData = [
       },
       {
         title: '薪火相传',
-        img: 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&q=80',
+        img: 'introx.jpg',
         desc: '将毕生所学整理成册，或许能给后来的探索者一点点光亮，这就足够了。'
       }
     ]

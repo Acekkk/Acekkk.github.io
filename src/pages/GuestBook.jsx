@@ -105,7 +105,7 @@ function GuestBook() {
 
         fetchMessages();
 
-        // 实时订阅新留言（可选）
+        // 实时订阅新留言
         const subscription = supabase
             .channel('guestbook_changes')
             .on('postgres_changes',
@@ -174,133 +174,173 @@ function GuestBook() {
         }
     };
 
-    const containerVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: {
+    // 页面动画
+    const pageVariants = {
+        initial: { opacity: 0, y: 20 },
+        animate: {
             opacity: 1,
             y: 0,
-            transition: { delayChildren: 0.2, staggerChildren: 0.1 },
+            transition: {
+                duration: 0.5,
+                ease: [0.22, 1, 0.36, 1],
+                staggerChildren: 0.08
+            }
         },
+        exit: {
+            opacity: 0,
+            y: -20,
+            transition: { duration: 0.3 }
+        }
     };
 
     const itemVariants = {
-        hidden: { y: 20, opacity: 0 },
-        visible: { y: 0, opacity: 1 },
+        initial: { opacity: 0, y: 30 },
+        animate: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 15
+            }
+        }
     };
 
     // 如果 Supabase 未配置，显示配置指南
     if (!isSupabaseConfigured) {
         return (
             <motion.div
-                className="relative min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 sm:p-8"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 relative overflow-hidden p-4 sm:p-8"
+                variants={pageVariants}
+                initial="initial"
+                animate="animate"
+                exit="exit"
             >
-                <div className="fixed top-1/4 right-1/4 w-96 h-96 bg-teal-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-                <div className="fixed bottom-1/4 left-1/4 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+                {/* 水墨背景 */}
+                <div className="fixed inset-0 pointer-events-none opacity-30">
+                    <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-radial from-stone-300/40 via-transparent to-transparent rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-40 left-20 w-80 h-80 bg-gradient-radial from-teal-200/30 via-transparent to-transparent rounded-full blur-3xl"></div>
+                </div>
 
-                <motion.div
-                    className="container relative z-10 max-w-3xl w-full mx-auto p-6 sm:p-10 bg-slate-900/40 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/5"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                >
+                <div className="max-w-3xl mx-auto relative z-10">
                     <Link to="/">
                         <motion.button
-                            className="mb-6 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-teal-500/50 text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                            className="mb-6 px-4 py-2 rounded-lg bg-white/70 border border-stone-200 hover:border-teal-400 text-stone-600 hover:text-teal-600 transition-colors text-sm font-medium"
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                         >
-                            ← 返回首页
+                            ← 返回
                         </motion.button>
                     </Link>
 
-                    <div className="text-center mb-8">
-                        <div className="text-6xl mb-4">⚙️</div>
-                        <h1 className="text-3xl sm:text-4xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500">
-                            留言板功能需要配置
-                        </h1>
-                        <p className="text-slate-400">
-                            请按照以下步骤配置 Supabase 后端服务
-                        </p>
-                    </div>
-
-                    <div className="space-y-6 text-left">
-                        <div className="p-5 rounded-2xl bg-white/5 border border-white/5">
-                            <h3 className="text-lg font-bold text-teal-400 mb-3">📝 配置步骤：</h3>
-                            <ol className="space-y-3 text-slate-300 text-sm list-decimal list-inside">
-                                <li>访问 <a href="https://app.supabase.com/" target="_blank" rel="noopener noreferrer" className="text-teal-400 hover:underline">Supabase Dashboard</a> 并创建项目</li>
-                                <li>在 SQL Editor 中执行建表语句（详见 SUPABASE_SETUP.md）</li>
-                                <li>在项目根目录创建 <code className="px-2 py-1 bg-slate-800 rounded text-teal-300">.env</code> 文件</li>
-                                <li>添加以下环境变量：</li>
-                            </ol>
+                    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 sm:p-12 border border-stone-200">
+                        <div className="text-center mb-8">
+                            <div className="text-6xl mb-4 opacity-50">⚙️</div>
+                            <h1 className="text-3xl sm:text-4xl font-black mb-4 bg-gradient-to-r from-stone-800 to-teal-700 bg-clip-text text-transparent">
+                                留言板功能需要配置
+                            </h1>
+                            <p className="text-stone-500 font-serif">
+                                请按照以下步骤配置 Supabase 后端服务
+                            </p>
                         </div>
 
-                        <div className="p-5 rounded-2xl bg-slate-800/50 border border-white/5">
-                            <pre className="text-xs sm:text-sm text-slate-300 overflow-x-auto">
-                                <code>{`VITE_SUPABASE_URL=你的Supabase项目URL
+                        <div className="space-y-4 text-left text-sm">
+                            <div className="p-5 rounded-xl bg-teal-50 border border-teal-200">
+                                <h3 className="text-lg font-bold text-teal-700 mb-3">📝 配置步骤：</h3>
+                                <ol className="space-y-2 text-stone-700 list-decimal list-inside">
+                                    <li>访问 <a href="https://app.supabase.com/" target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">Supabase Dashboard</a> 并创建项目</li>
+                                    <li>在 SQL Editor 中执行建表语句（详见 SUPABASE_SETUP.md）</li>
+                                    <li>在项目根目录创建 <code className="px-2 py-1 bg-white rounded text-teal-600">.env</code> 文件</li>
+                                    <li>添加环境变量</li>
+                                </ol>
+                            </div>
+
+                            <div className="p-5 rounded-xl bg-stone-100 border border-stone-200">
+                                <pre className="text-xs text-stone-700 overflow-x-auto">
+                                    <code>{`VITE_SUPABASE_URL=你的Supabase项目URL
 VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
-                            </pre>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-teal-500/10 border border-teal-500/20">
-                            <p className="text-teal-300 text-sm">
-                                💡 <strong>提示：</strong> 详细配置指南请查看项目根目录的 <code className="px-2 py-1 bg-slate-800 rounded">SUPABASE_SETUP.md</code> 文件
-                            </p>
-                        </div>
-
-                        <div className="p-5 rounded-2xl bg-purple-500/10 border border-purple-500/20">
-                            <p className="text-purple-300 text-sm">
-                                🔒 <strong>安全提示：</strong> 请确保 <code className="px-2 py-1 bg-slate-800 rounded">.env</code> 文件已添加到 <code className="px-2 py-1 bg-slate-800 rounded">.gitignore</code> 中，避免泄露密钥
-                            </p>
+                                </pre>
+                            </div>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </motion.div>
         );
     }
 
     return (
         <motion.div
-            className="relative min-h-screen bg-slate-950 text-white flex items-center justify-center p-4 sm:p-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="min-h-screen bg-gradient-to-br from-slate-50 via-gray-50 to-stone-100 relative overflow-hidden"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
         >
-            {/* 装饰光晕 */}
-            <div className="fixed top-1/4 right-1/4 w-96 h-96 bg-teal-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-            <div className="fixed bottom-1/4 left-1/4 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full pointer-events-none"></div>
+            {/* 水墨风格的背景装饰 */}
+            <div className="fixed inset-0 pointer-events-none opacity-30">
+                <div className="absolute top-20 right-10 w-96 h-96 bg-gradient-radial from-stone-300/40 via-transparent to-transparent rounded-full blur-3xl"></div>
+                <div className="absolute bottom-40 left-20 w-80 h-80 bg-gradient-radial from-teal-200/30 via-transparent to-transparent rounded-full blur-3xl"></div>
+                <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-gradient-radial from-stone-400/20 via-transparent to-transparent rounded-full blur-2xl"></div>
+            </div>
 
-            <motion.div
-                className="container relative z-10 max-w-4xl w-full mx-auto p-6 sm:p-10 bg-slate-900/40 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/5"
-                variants={containerVariants}
-                initial="hidden"
-                animate="visible"
-            >
+            {/* 赛博网格线 */}
+            <div className="fixed inset-0 pointer-events-none opacity-5">
+                <div className="w-full h-full" style={{
+                    backgroundImage: 'linear-gradient(teal 1px, transparent 1px), linear-gradient(90deg, teal 1px, transparent 1px)',
+                    backgroundSize: '40px 40px'
+                }}></div>
+            </div>
+
+            <div className="max-w-4xl mx-auto px-4 sm:px-8 py-12 relative z-10">
                 {/* 返回按钮 */}
                 <Link to="/">
                     <motion.button
-                        className="mb-6 px-4 py-2 rounded-lg bg-white/5 border border-white/10 hover:border-teal-500/50 text-slate-400 hover:text-teal-400 transition-colors text-sm"
+                        variants={itemVariants}
+                        className="mb-8 px-4 py-2 rounded-lg bg-white/70 border border-stone-200 hover:border-teal-400 text-stone-600 hover:text-teal-600 transition-colors text-sm font-medium inline-flex items-center gap-2"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
-                        ← 返回首页
+                        <span>←</span>
+                        <span>返回</span>
                     </motion.button>
                 </Link>
 
-                {/* 标题 */}
-                <motion.header variants={itemVariants} className="mb-8 text-center">
-                    <h1 className="text-4xl sm:text-5xl font-black mb-4 bg-clip-text text-transparent bg-gradient-to-r from-teal-400 via-sky-400 to-purple-500">
-                        留言板 📝
-                    </h1>
-                    <p className="text-slate-400 max-w-md mx-auto">
-                        留下您的足迹，分享您的想法
+                {/* 标题 - 水墨书法风格 */}
+                <motion.header variants={itemVariants} className="mb-12 text-center">
+                    <div className="relative inline-block mb-6">
+                        {/* 墨迹效果背景 */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-stone-300/40 via-teal-200/30 to-stone-300/40 blur-2xl -z-10 scale-110"></div>
+
+                        <h1 className="text-6xl sm:text-7xl font-black mb-2 relative">
+                            <span className="bg-gradient-to-r from-stone-800 via-stone-700 to-stone-800 bg-clip-text text-transparent tracking-wider">
+                                留
+                            </span>
+                            <span className="bg-gradient-to-r from-teal-700 via-teal-600 to-teal-700 bg-clip-text text-transparent tracking-wider mx-2">
+                                言
+                            </span>
+                            <span className="bg-gradient-to-r from-stone-800 via-stone-700 to-stone-800 bg-clip-text text-transparent tracking-wider">
+                                板
+                            </span>
+                        </h1>
+
+                        {/* 赛博装饰线 */}
+                        <div className="flex items-center justify-center gap-4 mt-4">
+                            <div className="h-px w-12 bg-gradient-to-r from-transparent via-teal-500 to-transparent"></div>
+                            <div className="w-1.5 h-1.5 bg-teal-500 rounded-full"></div>
+                            <div className="h-px w-12 bg-gradient-to-r from-transparent via-teal-500 to-transparent"></div>
+                        </div>
+                    </div>
+
+                    <p className="text-stone-500 font-serif text-lg italic">
+                        笔落惊风雨 · 诗成泣鬼神
                     </p>
                 </motion.header>
 
                 {/* 留言表单 */}
-                <motion.section variants={itemVariants} className="mb-10">
-                    <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-white/5 border border-white/5">
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                <motion.section variants={itemVariants} className="mb-12">
+                    <form onSubmit={handleSubmit} className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 sm:p-8 border border-stone-200 shadow-sm">
+                        <div className="mb-5">
+                            <label className="block text-sm font-medium text-stone-700 mb-2 font-serif">
                                 昵称 *
                             </label>
                             <input
@@ -309,12 +349,12 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                                 onChange={(e) => setNewMessage({ ...newMessage, name: e.target.value })}
                                 placeholder="请输入您的昵称"
                                 maxLength={50}
-                                className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-white/10 focus:border-teal-500/50 focus:outline-none text-white placeholder-slate-500 transition-colors"
+                                className="w-full px-4 py-3 rounded-xl bg-white border border-stone-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-200 focus:outline-none text-stone-800 placeholder-stone-400 transition-all"
                             />
                         </div>
 
-                        <div className="mb-4">
-                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                        <div className="mb-5">
+                            <label className="block text-sm font-medium text-stone-700 mb-2 font-serif">
                                 留言内容 *
                             </label>
                             <textarea
@@ -323,9 +363,9 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                                 placeholder="说点什么吧..."
                                 rows={4}
                                 maxLength={500}
-                                className="w-full px-4 py-3 rounded-xl bg-slate-800/50 border border-white/10 focus:border-teal-500/50 focus:outline-none text-white placeholder-slate-500 transition-colors resize-none"
+                                className="w-full px-4 py-3 rounded-xl bg-white border border-stone-200 focus:border-teal-400 focus:ring-2 focus:ring-teal-200 focus:outline-none text-stone-800 placeholder-stone-400 transition-all resize-none font-serif"
                             />
-                            <div className="text-xs text-slate-500 mt-1 text-right">
+                            <div className="text-xs text-stone-400 mt-1 text-right">
                                 {newMessage.content.length}/500
                             </div>
                         </div>
@@ -334,7 +374,7 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+                                className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-sm font-serif"
                             >
                                 {error}
                             </motion.div>
@@ -344,9 +384,9 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                             <motion.div
                                 initial={{ opacity: 0, y: -10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                className="mb-4 p-3 rounded-lg bg-teal-500/10 border border-teal-500/20 text-teal-400 text-sm"
+                                className="mb-4 p-3 rounded-lg bg-teal-50 border border-teal-200 text-teal-700 text-sm font-serif"
                             >
-                                留言提交成功！感谢您的留言 ✨
+                                留言提交成功！墨香犹存 ✨
                             </motion.div>
                         )}
 
@@ -356,33 +396,43 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                             whileHover={{ scale: (submitting || cooldownRemaining > 0) ? 1 : 1.02 }}
                             whileTap={{ scale: (submitting || cooldownRemaining > 0) ? 1 : 0.98 }}
                             className={`w-full py-3 rounded-xl font-bold transition-all ${submitting || cooldownRemaining > 0
-                                    ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-                                    : 'bg-gradient-to-r from-teal-500 to-purple-500 hover:from-teal-400 hover:to-purple-400 text-white shadow-lg shadow-teal-500/20'
+                                ? 'bg-stone-200 text-stone-400 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white shadow-lg shadow-teal-500/20'
                                 }`}
                         >
                             {submitting
                                 ? '提交中...'
                                 : cooldownRemaining > 0
                                     ? `请等待 ${cooldownRemaining} 秒`
-                                    : '发布留言'}
+                                    : '落笔留言'}
                         </motion.button>
                     </form>
                 </motion.section>
 
                 {/* 留言列表 */}
                 <motion.section variants={itemVariants}>
-                    <h2 className="text-2xl font-bold mb-6 text-white">
-                        所有留言 ({messages.length})
-                    </h2>
+                    <div className="flex items-center gap-3 mb-6">
+                        <h2 className="text-2xl font-bold text-stone-800">
+                            所有留言
+                        </h2>
+                        <span className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm font-bold border border-teal-200">
+                            {messages.length}
+                        </span>
+                    </div>
 
                     {loading ? (
-                        <div className="text-center py-12">
-                            <div className="inline-block w-8 h-8 border-4 border-teal-500/20 border-t-teal-500 rounded-full animate-spin"></div>
-                            <p className="text-slate-400 mt-4">加载中...</p>
+                        <div className="text-center py-16 bg-white/70 rounded-2xl border border-stone-200">
+                            <motion.div
+                                className="inline-block w-10 h-10 border-4 border-teal-200 border-t-teal-500 rounded-full mb-4"
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                            ></motion.div>
+                            <p className="text-stone-500 font-serif">墨香渐起...</p>
                         </div>
                     ) : messages.length === 0 ? (
-                        <div className="text-center py-12 p-6 rounded-2xl bg-white/5 border border-white/5">
-                            <p className="text-slate-400 text-lg">暂无留言，快来抢沙发吧！</p>
+                        <div className="text-center py-16 bg-white/70 rounded-2xl border border-stone-200">
+                            <div className="text-6xl mb-4 opacity-30">📖</div>
+                            <p className="text-stone-400 font-serif">空白画卷，待君挥毫...</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
@@ -394,24 +444,30 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20 }}
                                         transition={{ delay: index * 0.05 }}
-                                        className="p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-white/10 transition-colors"
+                                        whileHover={{ y: -2 }}
+                                        className="bg-white/70 backdrop-blur-sm rounded-2xl p-6 border border-stone-200 hover:border-teal-300 hover:shadow-md transition-all duration-300 group"
                                     >
-                                        <div className="flex items-start justify-between mb-3">
+                                        <div className="flex items-start justify-between mb-4">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-purple-500 flex items-center justify-center text-white font-bold shadow-lg">
+                                                {/* 印章风格头像 */}
+                                                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-white">
                                                     {message.name.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
-                                                    <div className="font-bold text-white">{message.name}</div>
-                                                    <div className="text-xs text-slate-500">
+                                                    <div className="font-bold text-stone-800 group-hover:text-teal-700 transition-colors">
+                                                        {message.name}
+                                                    </div>
+                                                    <div className="text-xs text-stone-400 font-serif">
                                                         {formatDate(message.created_at)}
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                                        <p className="text-stone-700 leading-relaxed whitespace-pre-wrap font-serif">
                                             {message.content}
                                         </p>
+                                        {/* 装饰条 */}
+                                        <div className="h-px bg-gradient-to-r from-transparent via-teal-200 to-transparent mt-4 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                     </motion.div>
                                 ))}
                             </AnimatePresence>
@@ -419,14 +475,18 @@ VITE_SUPABASE_ANON_KEY=你的anon密钥`}</code>
                     )}
                 </motion.section>
 
-                {/* 页脚 */}
+                {/* 页脚水墨印章 */}
                 <motion.footer
                     variants={itemVariants}
-                    className="mt-12 text-center text-slate-600 text-xs tracking-widest uppercase"
+                    className="mt-16 text-center"
                 >
-                    Powered by Supabase
+                    <div className="inline-flex items-center gap-3 text-xs text-stone-400 font-serif">
+                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-stone-300 to-transparent"></div>
+                        <span>留言千古 · 墨韵流芳</span>
+                        <div className="w-12 h-px bg-gradient-to-r from-transparent via-stone-300 to-transparent"></div>
+                    </div>
                 </motion.footer>
-            </motion.div>
+            </div>
         </motion.div>
     );
 }

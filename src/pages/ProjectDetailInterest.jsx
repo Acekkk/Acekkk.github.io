@@ -50,22 +50,22 @@ const interestData = [
     items: [
       {
         title: '徒步 & 探索自然',
-        img: 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&q=80',
+        img: '/walking.jpg',
         desc: '远离城市喧嚣，用双脚丈量大地，感受森林与山川的呼吸。'
       },
       {
         title: '自驾 & 骑行',
-        img: 'https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&q=80',
+        img: '/drive.jpg',
         desc: '风是自由的。骑上摩托，穿梭在城市与旷野之间，享受路途本身。'
       },
       {
         title: '滑雪',
-        img: 'https://images.unsplash.com/photo-1551698618-1dfe5d97d256?auto=format&fit=crop&q=80',
+        img: '/skiing.jpg',
         desc: '在银装素裹的世界中飞驰，掌控平衡，享受速度带来的肾上腺素。'
       },
       {
         title: '游泳',
-        img: 'https://images.unsplash.com/photo-1530549387789-4c1017266635?auto=format&fit=crop&q=80',
+        img: '/swim.jpg',
         desc: '像鱼一样自由。在水中舒展身体，释放所有的重力与压力。'
       }
     ]
@@ -77,12 +77,12 @@ const interestData = [
     items: [
       {
         title: '历史',
-        img: 'https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&q=80',
+        img: '/hist.jpg',
         desc: '以史为鉴。在字里行间探寻人类文明的兴衰演变与规律。'
       },
       {
         title: '科幻',
-        img: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80',
+        img: '/fantas.jpg',
         desc: '仰望星空。沉浸在《三体》、《沙丘》等宏大叙事中，畅想技术与伦理的未来。'
       }
     ]
