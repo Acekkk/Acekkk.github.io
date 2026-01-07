@@ -13,12 +13,12 @@ const introData = [
     items: [
       {
         title: '无忧无虑',
-        img: 'https://images.unsplash.com/photo-1472162072942-cd5147eb3902?auto=format&fit=crop&q=80',
+        img: '/intro8.jpg',
         desc: '那是记忆中最纯粹的时光，世界很大，烦恼很小。每天的作业是最大的敌人，楼下的沙堆是最好的城堡。'
       },
       {
         title: '好奇心',
-        img: 'https://images.unsplash.com/photo-1545558014-a69f79cb97ce?auto=format&fit=crop&q=80',
+        img: '/intro7.jpg',
         desc: '对一切未知充满好奇，拆过收音机，抓过知了，每一次探索都是一次伟大的冒险。'
       }
     ]
@@ -30,12 +30,12 @@ const introData = [
     items: [
       {
         title: '求学之路',
-        img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80',
+        img: '/intro3.jpg',
         desc: '书山有路勤为径。在知识的海洋里遨游，开始构建自己的世界观，虽然偶尔也会即使迷茫，但眼中总有光。'
       },
       {
         title: '初识代码',
-        img: 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&q=80',
+        img: '/intro6.jpg',
         desc: 'Hello World! 当第一次在屏幕上打印出这行字时，仿佛拥有了改变世界的魔法钥匙。'
       }
     ]
@@ -47,12 +47,12 @@ const introData = [
     items: [
       {
         title: '打工人的日常',
-        img: 'https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80',
+        img: '/intro4.jpg',
         desc: '早八晚五？不存在的。在代码的构建与重构中寻找价值，虽然自嘲牛马，但依然对技术保持热忱。'
       },
       {
         title: '技术沉淀',
-        img: 'https://images.unsplash.com/photo-1504384308090-c54be3853247?auto=format&fit=crop&q=80',
+        img: '/intro2.jpg',
         desc: '从 React 到自动驾驶算法，技能树不断点亮。解决问题的快感，是支撑每一个加班夜的动力。'
       }
     ]
@@ -64,7 +64,7 @@ const introData = [
     items: [
       {
         title: '归于平淡',
-        img: 'https://images.unsplash.com/photo-1444703686981-a3abbc4d4fe3?auto=format&fit=crop&q=80',
+        img: '/intro1.jpg',
         desc: '希望能有一个小院子，晒晒太阳，写写自己喜欢的代码，不为生计奔波，只为热爱而活。'
       },
       {
