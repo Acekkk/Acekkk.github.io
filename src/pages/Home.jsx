@@ -108,14 +108,14 @@ function Home() {
         when: "beforeChildren"
       }
     },
-    exit: {
-      opacity: 0,
-      scale: 0.98,
-      transition: {
-        duration: 0.3,
-        ease: [0.22, 1, 0.36, 1]
-      }
-    }
+    // exit: {
+    //   opacity: 0,
+    //   scale: 0.98,
+    //   transition: {
+    //     duration: 0.3,
+    //     ease: [0.22, 1, 0.36, 1]
+    //   }
+    // }
   };
 
   const itemVariants = {
@@ -147,6 +147,20 @@ function Home() {
       <div className="fixed top-20 right-20 w-96 h-96 bg-teal-100 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
       <div className="fixed bottom-20 left-20 w-80 h-80 bg-blue-100 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
 
+      {/* 动态网格背景 */}
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03]">
+        <div
+          className="w-full h-full"
+          style={{
+            backgroundImage: `
+              linear-gradient(to right, #14b8a6 1px, transparent 1px),
+              linear-gradient(to bottom, #14b8a6 1px, transparent 1px)
+            `,
+            backgroundSize: '40px 40px',
+          }}
+        />
+      </div>
+
       {/* 语言切换器 */}
       <LanguageSwitcher />
 
@@ -156,25 +170,104 @@ function Home() {
           variants={itemVariants}
           className="max-w-4xl mx-auto mb-16 text-center"
         >
-          <motion.div
-            className="relative inline-block mb-8"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="absolute inset-0 bg-teal-400 rounded-full blur-xl opacity-20"></div>
-            <img
-              src="/Avatar.jpg"
-              className="relative w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover"
-              alt="Avatar"
-            />
-          </motion.div>
+          {/* 头像 - 炫酷版 */}
+          <div className="relative inline-block mb-16">
+            {/* 外层旋转光环 */}
+            <div className="absolute inset-0 animate-spin-slow" style={{ width: '180px', height: '180px', left: '50%', top: '50%', marginLeft: '-90px', marginTop: '-90px' }}>
+              <div className="absolute top-0 left-1/2 w-3 h-3 bg-teal-400 rounded-full shadow-glow-teal" style={{ marginLeft: '-6px' }}></div>
+              <div className="absolute bottom-0 left-1/2 w-2 h-2 bg-blue-400 rounded-full shadow-glow-blue" style={{ marginLeft: '-4px' }}></div>
+            </div>
 
-          <h1 className="text-5xl sm:text-6xl font-black mb-6 text-gray-900 tracking-tight">
-            {t.greeting}
-          </h1>
-          <p className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed">
+            {/* 反向旋转光环 */}
+            <div className="absolute inset-0 animate-spin-reverse" style={{ width: '200px', height: '200px', left: '50%', top: '50%', marginLeft: '-100px', marginTop: '-100px' }}>
+              <div className="absolute top-1/2 right-0 w-2.5 h-2.5 bg-purple-400 rounded-full shadow-glow-purple" style={{ marginTop: '-5px' }}></div>
+              <div className="absolute top-1/2 left-0 w-2 h-2 bg-teal-300 rounded-full shadow-glow-teal" style={{ marginTop: '-4px' }}></div>
+            </div>
+
+            {/* 脉冲能量圆环 */}
+            <div className="absolute inset-0 animate-pulse-ring" style={{ width: '112px', height: '112px', left: '50%', top: '50%', marginLeft: '-56px', marginTop: '-56px' }}>
+              <div className="w-full h-full rounded-full border-2 border-teal-400/50"></div>
+            </div>
+
+            <div className="absolute inset-0 animate-pulse-ring-delayed" style={{ width: '112px', height: '112px', left: '50%', top: '50%', marginLeft: '-56px', marginTop: '-56px' }}>
+              <div className="w-full h-full rounded-full border-2 border-blue-400/30"></div>
+            </div>
+
+            <motion.div
+              className="relative inline-block"
+              whileHover={{ scale: 1.05 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              {/* 发光背景 */}
+              <div className="absolute inset-0 bg-teal-400 rounded-full blur-xl opacity-20 animate-glow"></div>
+
+              {/* 头像本体 */}
+              <img
+                src="/Avatar.jpg"
+                className="relative w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover z-10"
+                alt="Avatar"
+              />
+            </motion.div>
+
+            {/* 浮动技术标签 - 使用CSS动画 */}
+            <div className="absolute text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full border border-teal-200 animate-float-1 z-30" style={{ left: '50%', top: '-40px', marginLeft: '-15px' }}>
+              AI
+            </div>
+            <div className="absolute text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full border border-teal-200 animate-float-2 z-30" style={{ right: '-30px', top: '20px' }}>
+              React
+            </div>
+            <div className="absolute text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full border border-teal-200 animate-float-3 z-30" style={{ right: '-40px', bottom: '20px' }}>
+              Node
+            </div>
+            <div className="absolute text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full border border-teal-200 animate-float-4 z-30" style={{ left: '40%', bottom: '-40px', marginLeft: '-20px' }}>
+              Python
+            </div>
+            <div className="absolute text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full border border-teal-200 animate-float-5 z-30" style={{ left: '-30px', bottom: '20px' }}>
+              ROS
+            </div>
+            <div className="absolute text-xs font-semibold text-teal-600 bg-teal-50 px-2 py-1 rounded-full border border-teal-200 animate-float-6 z-30" style={{ left: '-35px', top: '20px' }}>
+              C++
+            </div>
+          </div>
+
+          {/* 标题 */}
+          <div className="relative">
+            {/* 标题文字 */}
+            <motion.h1
+              className="text-5xl sm:text-6xl font-black mb-6 tracking-tight relative z-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.8 }}
+            >
+              {/* 渐变文字 + 发光效果 */}
+              <span
+                className="bg-gradient-to-r from-gray-900 via-teal-700 to-gray-900 bg-clip-text text-transparent"
+                style={{
+                  textShadow: '0 0 40px rgba(20, 184, 166, 0.15)',
+                }}
+              >
+                {t.greeting}
+              </span>
+            </motion.h1>
+
+            {/* 下划线装饰 */}
+            <motion.div
+              className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-0.5 bg-gradient-to-r from-transparent via-teal-500 to-transparent"
+              initial={{ width: 0 }}
+              animate={{ width: '60%' }}
+              transition={{ delay: 0.8, duration: 1, ease: "easeOut" }}
+            />
+          </div>
+
+          {/* 副标题 */}
+          <motion.p
+            className="text-gray-500 text-lg max-w-2xl mx-auto leading-relaxed relative z-10"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.8 }}
+          >
             {t.tagline}
-          </p>
+          </motion.p>
         </motion.header>
 
         {/* 主要内容区域 */}
