@@ -13,7 +13,7 @@ import { format } from 'date-fns';
 
 export default function BlogPost() {
     const { slug } = useParams();
-    const { post, loading } = usePost(slug);
+    const { post, loading, refetch } = usePost(slug);
     const [liked, setLiked] = useState(false);
     const [localLikes, setLocalLikes] = useState(0);
     const [localViews, setLocalViews] = useState(0);
@@ -37,13 +37,24 @@ export default function BlogPost() {
 
             // 增加浏览量（只增加一次）
             incrementPostViews(post.id).then(() => {
-                setLocalViews(prev => prev + 1);
+                // 延迟一点后重新获取，确保数据库已更新
+                setTimeout(() => {
+                    refetch();
+                }, 500);
             });
 
             // 检查是否已点赞
             checkLiked(post.id).then(setLiked);
         }
     }, [post?.id]); // 使用 post.id 作为依赖，避免重复触发
+
+    // 监听post变化，更新本地状态
+    useEffect(() => {
+        if (post) {
+            setLocalLikes(post.likes || 0);
+            setLocalViews(post.views || 0);
+        }
+    }, [post?.likes, post?.views]);
 
     // 冷却倒计时
     useEffect(() => {
@@ -70,7 +81,10 @@ export default function BlogPost() {
             const result = await likePost(post.id);
             if (result.liked !== undefined) {
                 setLiked(result.liked);
-                setLocalLikes(prev => result.liked ? prev + 1 : Math.max(0, prev - 1));
+                // 重新获取文章数据以获得准确的点赞数
+                setTimeout(() => {
+                    refetch();
+                }, 300);
             }
         } finally {
             setIsLiking(false);
