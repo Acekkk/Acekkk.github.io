@@ -8,6 +8,7 @@ import remarkGfm from 'remark-gfm';
 import { usePost, likePost, checkLiked } from '../hooks/usePosts';
 import { usePageView, incrementPostViews } from '../hooks/usePageView';
 import { useComments, submitComment, getCommentCooldownRemaining, formatCommentDate } from '../hooks/useComments';
+import { isSupabaseConfigured } from '../supabaseClient';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { format } from 'date-fns';
 
@@ -15,9 +16,8 @@ export default function BlogPost() {
     const { slug } = useParams();
     const { post, loading, refetch } = usePost(slug);
     const [liked, setLiked] = useState(false);
-    const [localLikes, setLocalLikes] = useState(0);
-    const [localViews, setLocalViews] = useState(0);
     const [isLiking, setIsLiking] = useState(false);
+    const [viewsIncremented, setViewsIncremented] = useState(false);
 
     // 评论相关状态
     const { comments, loading: commentsLoading } = useComments(post?.id);
@@ -30,14 +30,19 @@ export default function BlogPost() {
     usePageView(post ? `/blog/${post.slug}` : null, post?.title);
 
     useEffect(() => {
-        if (post) {
-            // 设置初始值
-            setLocalLikes(post.likes || 0);
-            setLocalViews(post.views || 0);
+        if (post && !viewsIncremented) {
+            console.log('📊 Post loaded:', {
+                id: post.id,
+                slug: post.slug,
+                likes: post.likes,
+                views: post.views,
+                supabaseConfigured: isSupabaseConfigured
+            });
 
             // 增加浏览量（只增加一次）
+            setViewsIncremented(true);
             incrementPostViews(post.id).then(() => {
-                // 延迟一点后重新获取，确保数据库已更新
+                // 延迟后重新获取数据
                 setTimeout(() => {
                     refetch();
                 }, 500);
@@ -46,15 +51,7 @@ export default function BlogPost() {
             // 检查是否已点赞
             checkLiked(post.id).then(setLiked);
         }
-    }, [post?.id]); // 使用 post.id 作为依赖，避免重复触发
-
-    // 监听post变化，更新本地状态
-    useEffect(() => {
-        if (post) {
-            setLocalLikes(post.likes || 0);
-            setLocalViews(post.views || 0);
-        }
-    }, [post?.likes, post?.views]);
+    }, [post?.id, viewsIncremented]);
 
     // 冷却倒计时
     useEffect(() => {
@@ -74,14 +71,14 @@ export default function BlogPost() {
     }, [cooldownRemaining]);
 
     async function handleLike() {
-        if (!post || isLiking) return; // 防止连续点击
+        if (!post || isLiking) return;
 
         setIsLiking(true);
         try {
             const result = await likePost(post.id);
             if (result.liked !== undefined) {
                 setLiked(result.liked);
-                // 重新获取文章数据以获得准确的点赞数
+                // 重新获取文章数据
                 setTimeout(() => {
                     refetch();
                 }, 300);
@@ -172,8 +169,8 @@ export default function BlogPost() {
                     {/* 元信息 */}
                     <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mb-6">
                         <span>📅 {format(new Date(post.created_at), 'yyyy年MM月dd日')}</span>
-                        <span>👁️ {localViews} 阅读</span>
-                        <span>❤️ {localLikes} 点赞</span>
+                        <span>👁️ {post.views || 0} 阅读</span>
+                        <span>❤️ {post.likes || 0} 点赞</span>
                     </div>
 
                     {/* 标签 */}
