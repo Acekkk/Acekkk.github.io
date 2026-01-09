@@ -5,6 +5,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import { useTranslation } from '../i18n/translations';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import CryptoPrices from '../components/CryptoPrices';
+import { useTotalViews } from '../hooks/useTotalViews';
 
 // --- 电子木鱼组件 ---
 const WoodFish = () => {
@@ -88,6 +89,86 @@ const WoodFish = () => {
   );
 };
 
+// --- 顶部浏览量小组件 ---
+const ViewsWidget = () => {
+  const { totalViews, loading } = useTotalViews();
+
+  return (
+    <motion.div
+      className="bg-white/90 backdrop-blur-md rounded-2xl px-4 py-2.5 shadow-lg border border-gray-200/50 flex items-center gap-2"
+      initial={{ opacity: 0, x: -20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ delay: 0.5, duration: 0.5 }}
+      whileHover={{ scale: 1.05, boxShadow: "0 10px 30px -5px rgba(0, 0, 0, 0.1)" }}
+    >
+      <span className="text-xl">👁️</span>
+      <div className="flex flex-col">
+        <span className="text-[10px] text-gray-400 leading-none mb-0.5 uppercase tracking-wider">Views</span>
+        {loading ? (
+          <span className="text-sm font-bold text-gray-900 animate-pulse">...</span>
+        ) : (
+          <span className="text-sm font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            {totalViews.toLocaleString()}
+          </span>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
+// --- 累计浏览量组件 ---
+const TotalViewsCounter = () => {
+  const { totalViews, loading } = useTotalViews();
+  const [displayCount, setDisplayCount] = React.useState(0);
+
+  // 数字滚动动画
+  React.useEffect(() => {
+    if (loading || totalViews === 0) return;
+
+    const duration = 1500; // 1.5秒
+    const steps = 60;
+    const increment = totalViews / steps;
+    let current = 0;
+
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= totalViews) {
+        setDisplayCount(totalViews);
+        clearInterval(timer);
+      } else {
+        setDisplayCount(Math.floor(current));
+      }
+    }, duration / steps);
+
+    return () => clearInterval(timer);
+  }, [totalViews, loading]);
+
+  if (loading) {
+    return (
+      <div className="text-right">
+        <div className="text-3xl font-black text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text animate-pulse">
+          ...
+        </div>
+        <div className="text-xs text-gray-400 mt-1">loading</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="text-right">
+      <motion.div
+        className="text-4xl font-black text-transparent bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text"
+        initial={{ scale: 0.5, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 200 }}
+      >
+        {displayCount.toLocaleString()}
+      </motion.div>
+      <div className="text-xs text-gray-400 mt-1">views</div>
+    </div>
+  );
+};
+
 function Home() {
   const { language } = useLanguage();
   const t = useTranslation(language);
@@ -159,6 +240,12 @@ function Home() {
             backgroundSize: '40px 40px',
           }}
         />
+      </div>
+
+      {/* 顶部工具栏 */}
+      <div className="fixed top-6 left-6 z-50 flex gap-3">
+        {/* 累计浏览量 */}
+        <ViewsWidget />
       </div>
 
       {/* 语言切换器 */}
@@ -329,6 +416,7 @@ function Home() {
               </ul>
             </motion.div>
           ))}
+
 
           {/* 留言板入口 */}
           <motion.div variants={itemVariants}>
