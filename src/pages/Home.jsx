@@ -37,12 +37,12 @@ const WoodFish = () => {
         <div className="text-gray-400 text-[10px] mb-4 uppercase tracking-[0.3em] font-semibold">
           {t.cyberTemple}
         </div>
-        <div className="text-3xl font-bold text-gray-900 mb-8">
-          {t.meritCount}：<span className={count >= 100 ? "text-teal-600" : "text-teal-500"}>{count}</span>
+        <div className="text-2xl font-medium text-gray-400 mb-8">
+          {t.meritCount}：<span className={count >= 100 ? "text-teal-500 font-bold" : "text-teal-400 font-bold"}>{count}</span>
         </div>
         <div className="relative cursor-pointer select-none" onClick={handleClick}>
-          {/* 文字特效容器 */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 text-center pointer-events-none" style={{ height: '150px' }}>
+          {/* 文字特效容器 - z-20确保在功德数文字之上 */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 text-center pointer-events-none z-20" style={{ height: '150px' }}>
             <AnimatePresence>
               {popups.map(popup => (
                 <motion.div
@@ -67,8 +67,8 @@ const WoodFish = () => {
                     : popup.text.includes('消散') || popup.text.includes('Gone')
                       ? 'text-purple-500'
                       : 'text-teal-500'
-                    }`}
-                  style={{ top: 0 }}
+                    } drop-shadow-lg`}
+                  style={{ top: 0, textShadow: '0 0 10px rgba(255,255,255,0.9), 0 0 20px rgba(255,255,255,0.7)' }}
                 >
                   {popup.text}
                 </motion.div>

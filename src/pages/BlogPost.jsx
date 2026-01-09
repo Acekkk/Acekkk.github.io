@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -7,6 +7,7 @@ import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
 import { usePost, likePost, checkLiked } from '../hooks/usePosts';
 import { usePageView, incrementPostViews } from '../hooks/usePageView';
+import { useComments, submitComment, getCommentCooldownRemaining, formatCommentDate } from '../hooks/useComments';
 import { LanguageSwitcher } from '../components/LanguageSwitcher';
 import { format } from 'date-fns';
 
@@ -15,28 +16,93 @@ export default function BlogPost() {
     const { post, loading } = usePost(slug);
     const [liked, setLiked] = useState(false);
     const [localLikes, setLocalLikes] = useState(0);
+    const [localViews, setLocalViews] = useState(0);
+    const [isLiking, setIsLiking] = useState(false);
+
+    // 评论相关状态
+    const { comments, loading: commentsLoading } = useComments(post?.id);
+    const [newComment, setNewComment] = useState({ name: '', content: '' });
+    const [submitting, setSubmitting] = useState(false);
+    const [commentError, setCommentError] = useState(null);
+    const [commentSuccess, setCommentSuccess] = useState(false);
+    const [cooldownRemaining, setCooldownRemaining] = useState(0);
 
     usePageView(post ? `/blog/${post.slug}` : null, post?.title);
 
     useEffect(() => {
         if (post) {
-            // 增加浏览量
-            incrementPostViews(post.id);
+            // 设置初始值
             setLocalLikes(post.likes || 0);
+            setLocalViews(post.views || 0);
+
+            // 增加浏览量（只增加一次）
+            incrementPostViews(post.id).then(() => {
+                setLocalViews(prev => prev + 1);
+            });
 
             // 检查是否已点赞
             checkLiked(post.id).then(setLiked);
         }
-    }, [post]);
+    }, [post?.id]); // 使用 post.id 作为依赖，避免重复触发
+
+    // 冷却倒计时
+    useEffect(() => {
+        if (cooldownRemaining <= 0) return;
+
+        const timer = setInterval(() => {
+            const remaining = getCommentCooldownRemaining();
+            if (remaining <= 0) {
+                setCooldownRemaining(0);
+                setCommentError(null);
+            } else {
+                setCooldownRemaining(remaining);
+            }
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [cooldownRemaining]);
 
     async function handleLike() {
-        if (!post) return;
+        if (!post || isLiking) return; // 防止连续点击
 
-        const result = await likePost(post.id);
-        if (result.liked !== undefined) {
-            setLiked(result.liked);
-            setLocalLikes(prev => result.liked ? prev + 1 : prev - 1);
+        setIsLiking(true);
+        try {
+            const result = await likePost(post.id);
+            if (result.liked !== undefined) {
+                setLiked(result.liked);
+                setLocalLikes(prev => result.liked ? prev + 1 : Math.max(0, prev - 1));
+            }
+        } finally {
+            setIsLiking(false);
         }
+    }
+
+    // 提交评论
+    async function handleCommentSubmit(e) {
+        e.preventDefault();
+
+        if (!newComment.name.trim() || !newComment.content.trim()) {
+            setCommentError('请填写昵称和评论内容');
+            return;
+        }
+
+        setSubmitting(true);
+        setCommentError(null);
+
+        const result = await submitComment(post.id, newComment.name, newComment.content);
+
+        if (result.error) {
+            setCommentError(result.error);
+            if (result.cooldown) {
+                setCooldownRemaining(result.cooldown);
+            }
+        } else if (result.success) {
+            setNewComment({ name: '', content: '' });
+            setCommentSuccess(true);
+            setTimeout(() => setCommentSuccess(false), 3000);
+        }
+
+        setSubmitting(false);
     }
 
     if (loading) {
@@ -92,7 +158,7 @@ export default function BlogPost() {
                     {/* 元信息 */}
                     <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mb-6">
                         <span>📅 {format(new Date(post.created_at), 'yyyy年MM月dd日')}</span>
-                        <span>👁️ {post.views || 0} 阅读</span>
+                        <span>👁️ {localViews} 阅读</span>
                         <span>❤️ {localLikes} 点赞</span>
                     </div>
 
@@ -169,16 +235,162 @@ export default function BlogPost() {
                 >
                     <motion.button
                         onClick={handleLike}
+                        disabled={isLiking}
                         className={`px-8 py-4 rounded-full text-lg font-semibold transition-all ${liked
                             ? 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
                             : 'glass-effect border border-white/20 hover:border-teal-400/50'
-                            }`}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                            } ${isLiking ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        whileHover={{ scale: isLiking ? 1 : 1.05 }}
+                        whileTap={{ scale: isLiking ? 1 : 0.95 }}
                     >
-                        {liked ? '❤️ 已点赞' : '🤍 点个赞'}
+                        {isLiking ? '⏳ 处理中...' : liked ? '❤️ 已点赞' : '🤍 点个赞'}
                     </motion.button>
                 </motion.div>
+
+                {/* 评论区 */}
+                <motion.section
+                    className="mt-16 border-t border-white/10 pt-12"
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                >
+                    {/* 评论区标题 */}
+                    <div className="flex items-center gap-3 mb-8">
+                        <h2 className="text-3xl font-bold text-white">💬 评论区</h2>
+                        <span className="px-3 py-1 bg-teal-500/20 text-teal-400 rounded-full text-sm font-bold border border-teal-500/30">
+                            {comments?.length || 0}
+                        </span>
+                    </div>
+
+                    {/* 评论表单 */}
+                    <form onSubmit={handleCommentSubmit} className="glass-effect rounded-2xl p-6 sm:p-8 border border-white/10 mb-8">
+                        <div className="mb-5">
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                                昵称 *
+                            </label>
+                            <input
+                                type="text"
+                                value={newComment.name}
+                                onChange={(e) => setNewComment({ ...newComment, name: e.target.value })}
+                                placeholder="请输入您的昵称"
+                                maxLength={50}
+                                className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 focus:border-teal-400/50 focus:ring-2 focus:ring-teal-400/20 focus:outline-none text-white placeholder-slate-500 transition-all"
+                            />
+                        </div>
+
+                        <div className="mb-5">
+                            <label className="block text-sm font-medium text-slate-300 mb-2">
+                                评论内容 *
+                            </label>
+                            <textarea
+                                value={newComment.content}
+                                onChange={(e) => setNewComment({ ...newComment, content: e.target.value })}
+                                placeholder="说点什么吧..."
+                                rows={4}
+                                maxLength={500}
+                                className="w-full px-4 py-3 rounded-xl bg-slate-900/50 border border-white/10 focus:border-teal-400/50 focus:ring-2 focus:ring-teal-400/20 focus:outline-none text-white placeholder-slate-500 transition-all resize-none"
+                            />
+                            <div className="text-xs text-slate-400 mt-1 text-right">
+                                {newComment.content.length}/500
+                            </div>
+                        </div>
+
+                        {commentError && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 text-sm"
+                            >
+                                {commentError}
+                            </motion.div>
+                        )}
+
+                        {commentSuccess && (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="mb-4 p-3 rounded-lg bg-teal-500/10 border border-teal-500/30 text-teal-400 text-sm"
+                            >
+                                评论提交成功！✨
+                            </motion.div>
+                        )}
+
+                        <motion.button
+                            type="submit"
+                            disabled={submitting || cooldownRemaining > 0}
+                            whileHover={{ scale: (submitting || cooldownRemaining > 0) ? 1 : 1.02 }}
+                            whileTap={{ scale: (submitting || cooldownRemaining > 0) ? 1 : 0.98 }}
+                            className={`w-full py-3 rounded-xl font-bold transition-all ${submitting || cooldownRemaining > 0
+                                ? 'bg-slate-700 text-slate-400 cursor-not-allowed'
+                                : 'bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white shadow-lg shadow-teal-500/20'
+                                }`}
+                        >
+                            {submitting
+                                ? '提交中...'
+                                : cooldownRemaining > 0
+                                    ? `请等待 ${cooldownRemaining} 秒`
+                                    : '发表评论'}
+                        </motion.button>
+                    </form>
+
+                    {/* 评论列表 */}
+                    <div>
+                        <h3 className="text-xl font-bold text-white mb-6">全部评论</h3>
+                        {commentsLoading ? (
+                            <div className="text-center py-16 glass-effect rounded-2xl border border-white/10">
+                                <motion.div
+                                    className="inline-block w-10 h-10 border-4 border-teal-500/30 border-t-teal-500 rounded-full mb-4"
+                                    animate={{ rotate: 360 }}
+                                    transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                ></motion.div>
+                                <p className="text-slate-400">加载评论中...</p>
+                            </div>
+                        ) : !comments || comments.length === 0 ? (
+                            <div className="text-center py-16 glass-effect rounded-2xl border border-white/10">
+                                <div className="text-6xl mb-4 opacity-30">💭</div>
+                                <p className="text-slate-400">还没有评论，快来抢沙发吧！</p>
+                            </div>
+                        ) : (
+                            <div className="space-y-4">
+                                <AnimatePresence>
+                                    {comments.map((comment, index) => (
+                                        <motion.div
+                                            key={comment.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -20 }}
+                                            transition={{ delay: index * 0.05 }}
+                                            whileHover={{ y: -2 }}
+                                            className="glass-effect rounded-2xl p-6 border border-white/10 hover:border-teal-500/30 hover:shadow-lg hover:shadow-teal-500/10 transition-all duration-300 group"
+                                        >
+                                            <div className="flex items-start justify-between mb-4">
+                                                <div className="flex items-center gap-3">
+                                                    {/* 头像 */}
+                                                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center text-white font-bold text-lg shadow-md border-2 border-teal-400/30">
+                                                        {comment.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <div className="font-bold text-white group-hover:text-teal-400 transition-colors">
+                                                            {comment.name}
+                                                        </div>
+                                                        <div className="text-xs text-slate-400">
+                                                            {formatCommentDate(comment.created_at)}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <p className="text-slate-300 leading-relaxed whitespace-pre-wrap">
+                                                {comment.content}
+                                            </p>
+                                            {/* 装饰条 */}
+                                            <div className="h-px bg-gradient-to-r from-transparent via-teal-500/30 to-transparent mt-4 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                        )}
+                    </div>
+                </motion.section>
             </article>
         </motion.div>
     );
